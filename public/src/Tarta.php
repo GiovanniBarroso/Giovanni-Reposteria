@@ -8,16 +8,8 @@ class Tarta extends Dulce
     private int $minNumComensales;
     private int $maxNumComensales;
 
-    public function __construct(
-        string $nombre,
-        float $precio,
-        string $descripcion,
-        string $categoria,
-        array $rellenos,
-        int $numPisos,
-        int $minNumComensales = 2,
-        int $maxNumComensales
-    ) {
+    public function __construct(string $nombre, float $precio, string $descripcion, string $categoria, array $rellenos, int $numPisos, int $minNumComensales = 2, int $maxNumComensales)
+    {
         parent::__construct($nombre, $precio, $descripcion, $categoria);
         $this->rellenos = $rellenos;
         $this->numPisos = $numPisos;
@@ -36,9 +28,7 @@ class Tarta extends Dulce
     public function muestraResumen(): string
     {
         $rellenos = implode(", ", $this->rellenos);
-        return "Tarta: {$this->nombre}, Precio: {$this->precio}€, Categoría: {$this->categoria}, "
-            . "Rellenos: {$rellenos}, Número de Pisos: {$this->numPisos}, "
-            . "Descripción: {$this->descripcion}, Comensales Posibles: {$this->muestraComensalesPosibles()}";
+        return "Tarta: {$this->nombre}, Precio: {$this->precio}€, Categoría: {$this->categoria}, Rellenos: {$rellenos}, Número de Pisos: {$this->numPisos}, Descripción: {$this->descripcion}, Comensales Posibles: {$this->muestraComensalesPosibles()}";
     }
 }
 ?>

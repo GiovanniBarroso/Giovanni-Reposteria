@@ -1,5 +1,7 @@
 <?php
-class Dulce
+require_once 'Resumible.php';
+
+abstract class Dulce implements Resumible
 {
     protected string $nombre;
     protected float $precio;
@@ -40,9 +42,7 @@ class Dulce
         return self::$IVA;
     }
 
-    public function muestraResumen(): string
-    {
-        return "Dulce: {$this->nombre}, Precio: {$this->precio}€, Categoría: {$this->categoria}, Descripción: {$this->descripcion}";
-    }
+    // Método abstracto que las subclases deben implementar
+    abstract public function muestraResumen(): string;
 }
 ?>
