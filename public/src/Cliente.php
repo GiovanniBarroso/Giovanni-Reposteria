@@ -1,5 +1,6 @@
 <?php
 require_once 'Dulce.php';
+require_once '../util/DulceNoCompradoException.php';
 
 class Cliente
 {
@@ -56,11 +57,10 @@ class Cliente
 
     public function valorar(Dulce $d, string $comentario): void
     {
-        if ($this->listaDeDulces($d)) {
-            echo "Valoración del dulce {$d->getNombre()}: {$comentario}\n";
-        } else {
-            echo "No puedes valorar un dulce que no has comprado.\n";
+        if (!$this->listaDeDulces($d)) {
+            throw new DulceNoCompradoException("No puedes valorar un dulce que no has comprado: {$d->getNombre()}");
         }
+        echo "Comentario sobre {$d->getNombre()}: {$comentario}\n";
     }
 
     public function listarPedidos(): void

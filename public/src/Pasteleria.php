@@ -1,6 +1,8 @@
 <?php
 require_once 'Dulce.php';
 require_once 'Cliente.php';
+require_once '../util/DulceNoEncontradoException.php';
+require_once '../util/ClienteNoEncontradoException.php';
 
 class Pasteleria
 {
@@ -29,13 +31,33 @@ class Pasteleria
 
     public function buscarProducto(string $nombre): ?Dulce
     {
-        foreach ($this->productos as $producto) {
-            if ($producto->getNombre() === $nombre) {
-                return $producto;
+        try {
+            foreach ($this->productos as $producto) {
+                if ($producto->getNombre() === $nombre) {
+                    return $producto;
+                }
             }
+            throw new DulceNoEncontradoException("Producto no encontrado: {$nombre}");
+        } catch (DulceNoEncontradoException $e) {
+            echo $e->getMessage();
+            return null;
         }
-        echo "Producto no encontrado: {$nombre}\n";
-        return null;
     }
+
+    public function buscarCliente(string $nombre): ?Cliente
+    {
+        try {
+            foreach ($this->clientes as $cliente) {
+                if ($cliente->getNombre() === $nombre) {
+                    return $cliente;
+                }
+            }
+            throw new ClienteNoEncontradoException("Cliente no encontrado: {$nombre}");
+        } catch (ClienteNoEncontradoException $e) {
+            echo $e->getMessage();
+            return null;
+        }
+    }
+
 }
 ?>
