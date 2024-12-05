@@ -1,4 +1,4 @@
-CREATE DATABASE pasteleria IF NOT EXISTS;
+CREATE DATABASE IF NOT EXISTS pasteleria;
 
 USE pasteleria;
 
@@ -6,7 +6,8 @@ CREATE TABLE productos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
     precio DECIMAL(10, 2) NOT NULL,
-    categoria VARCHAR(50) NOT NULL
+    categoria VARCHAR(50) NOT NULL,
+    tipo VARCHAR(20) NOT NULL
 );
 
 CREATE TABLE clientes (
@@ -25,5 +26,7 @@ CREATE TABLE pedidos (
     FOREIGN KEY (producto_id) REFERENCES productos(id)
 );
 
-
-ALTER TABLE productos ADD COLUMN tipo VARCHAR(20) NOT NULL;
+-- Insertar usuarios iniciales
+INSERT INTO clientes (nombre, usuario, password) VALUES
+('Administrador', 'admin', MD5('admin')), -- Encripta la contraseña
+('Usuario Genérico', 'usuario', MD5('usuario')); -- Encripta la contraseña

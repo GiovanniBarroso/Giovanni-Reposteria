@@ -14,7 +14,7 @@ class Database
             $host = 'localhost';
             $dbname = 'pasteleria';
             $user = 'root';
-            $password = ''; // Cambiar si tienes contraseña en MySQL
+            $password = 'Joframan123.';
 
             try {
                 self::$instance = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $password);

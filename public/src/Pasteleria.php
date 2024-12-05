@@ -3,6 +3,7 @@ require_once 'Dulce.php';
 require_once 'Cliente.php';
 require_once '../util/DulceNoEncontradoException.php';
 require_once '../util/ClienteNoEncontradoException.php';
+require_once __DIR__ . '/../db/Database.php';
 
 class Pasteleria
 {
