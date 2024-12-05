@@ -24,3 +24,6 @@ CREATE TABLE pedidos (
     FOREIGN KEY (cliente_id) REFERENCES clientes(id),
     FOREIGN KEY (producto_id) REFERENCES productos(id)
 );
+
+
+ALTER TABLE productos ADD COLUMN tipo VARCHAR(20) NOT NULL;
