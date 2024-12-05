@@ -30,3 +30,9 @@ CREATE TABLE pedidos (
 INSERT INTO clientes (nombre, usuario, password) VALUES
 ('Administrador', 'admin', MD5('admin')), -- Encripta la contraseña
 ('Usuario Genérico', 'usuario', MD5('usuario')); -- Encripta la contraseña
+
+
+INSERT INTO productos (id, nombre, precio, categoria, tipo) VALUES
+(1, 'Croissant', 2.50, 'Bollo', 'Bollo'),
+(2, 'Chocolate Negro', 3.00, 'Chocolate', 'Chocolate'),
+(3, 'Tarta de Queso', 15.00, 'Tarta', 'Tarta');

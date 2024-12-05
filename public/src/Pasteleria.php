@@ -1,6 +1,9 @@
 <?php
 require_once 'Dulce.php';
 require_once 'Cliente.php';
+require_once 'Bollo.php';
+require_once 'Chocolate.php';
+require_once 'Tarta.php';
 require_once '../util/DulceNoEncontradoException.php';
 require_once '../util/ClienteNoEncontradoException.php';
 require_once __DIR__ . '/../db/Database.php';
@@ -63,8 +66,9 @@ class Pasteleria
     public function guardarProducto(Dulce $d): bool
     {
         $db = Database::getConnection();
-        $query = "INSERT INTO productos (nombre, precio, categoria, tipo) VALUES (:nombre, :precio, :categoria, :tipo)";
+        $query = "INSERT INTO productos (id, nombre, precio, categoria, tipo) VALUES (:id, :nombre, :precio, :categoria, :tipo)";
         $stmt = $db->prepare($query);
+        $stmt->bindValue(':id', $d->getId());
         $stmt->bindValue(':nombre', $d->getNombre());
         $stmt->bindValue(':precio', $d->getPrecio());
         $stmt->bindValue(':categoria', $d->getCategoria());
@@ -84,6 +88,7 @@ class Pasteleria
             switch ($row['tipo']) {
                 case 'Bollo':
                     $productos[] = new Bollo(
+                        $row['id'], // Incluye el id
                         $row['nombre'],
                         $row['precio'],
                         $row['descripcion'] ?? '',
@@ -94,6 +99,7 @@ class Pasteleria
 
                 case 'Chocolate':
                     $productos[] = new Chocolate(
+                        $row['id'], // Incluye el id
                         $row['nombre'],
                         $row['precio'],
                         $row['descripcion'] ?? '',
@@ -105,11 +111,12 @@ class Pasteleria
 
                 case 'Tarta':
                     $productos[] = new Tarta(
+                        $row['id'], // Incluye el id
                         $row['nombre'],
                         $row['precio'],
                         $row['descripcion'] ?? '',
                         $row['categoria'],
-                        explode(',', $row['rellenos'] ?? ''), // Rellenos como array
+                        explode(',', $row['rellenos'] ?? ''),
                         $row['numPisos'] ?? 1,
                         $row['minNumComensales'] ?? 2,
                         $row['maxNumComensales'] ?? 2
@@ -117,13 +124,13 @@ class Pasteleria
                     break;
 
                 default:
-                    // Si el tipo no coincide, lanza una excepción o ignóralo
                     echo "Tipo desconocido: {$row['tipo']}";
             }
         }
 
         return $productos;
     }
+
 
 
     public function actualizarProducto(int $id, Dulce $d): bool
@@ -148,6 +155,59 @@ class Pasteleria
         return $stmt->execute();
     }
 
+    public function buscarProductoPorId(int $id): ?Dulce
+    {
+        $db = Database::getConnection();
+        $query = "SELECT * FROM productos WHERE id = :id";
+        $stmt = $db->prepare($query);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$row) {
+            return null; // Retorna null si no se encuentra el producto
+        }
+
+        // Crear la instancia del producto basado en el tipo
+        switch ($row['tipo']) {
+            case 'Bollo':
+                return new Bollo(
+                    $row['id'], // Incluye el id
+                    $row['nombre'],
+                    $row['precio'],
+                    $row['descripcion'] ?? '',
+                    $row['categoria'],
+                    $row['relleno'] ?? ''
+                );
+
+            case 'Chocolate':
+                return new Chocolate(
+                    $row['id'], // Incluye el id
+                    $row['nombre'],
+                    $row['precio'],
+                    $row['descripcion'] ?? '',
+                    $row['categoria'],
+                    $row['porcentajeCacao'] ?? 0,
+                    $row['peso'] ?? 0
+                );
+
+            case 'Tarta':
+                return new Tarta(
+                    $row['id'], // Incluye el id
+                    $row['nombre'],
+                    $row['precio'],
+                    $row['descripcion'] ?? '',
+                    $row['categoria'],
+                    explode(',', $row['rellenos'] ?? ''), // Convierte a array
+                    $row['numPisos'] ?? 1,
+                    $row['minNumComensales'] ?? 2,
+                    $row['maxNumComensales'] ?? 2
+                );
+
+            default:
+                return null; // Retorna null si el tipo no coincide
+        }
+    }
 
 
 }

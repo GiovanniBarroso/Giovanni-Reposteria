@@ -8,9 +8,10 @@ class Tarta extends Dulce
     private int $minNumComensales;
     private int $maxNumComensales;
 
-    public function __construct(string $nombre, float $precio, string $descripcion, string $categoria, array $rellenos, int $numPisos, int $minNumComensales = 2, int $maxNumComensales)
+    public function __construct(int $id, string $nombre, float $precio, string $descripcion, string $categoria, array $rellenos, int $numPisos, int $minNumComensales = 2, int $maxNumComensales)
     {
-        parent::__construct($nombre, $precio, $descripcion, $categoria);
+        parent::__construct($id, $nombre, $precio, $descripcion, $categoria);
+        $this->id = $id;
         $this->rellenos = $rellenos;
         $this->numPisos = $numPisos;
         $this->minNumComensales = $minNumComensales;
