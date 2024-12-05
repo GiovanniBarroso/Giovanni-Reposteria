@@ -39,10 +39,11 @@ $productos = $pasteleria->obtenerProductos();
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <?= htmlspecialchars($producto->getNombre()) ?> -
                             <?= number_format($producto->getPrecio(), 2) ?>€
-                            <button class="btn btn-success btn-sm add-to-cart" data-id="<?= $producto->getNombre() ?>"
+                            <button class="btn btn-success btn-sm add-to-cart" data-id="<?= $producto->getId() ?>"
                                 data-price="<?= $producto->getPrecio() ?>">
                                 <i class="bi bi-cart-plus"></i> Agregar
                             </button>
+
                         </li>
                     <?php endforeach; ?>
                 </ul>
@@ -54,7 +55,17 @@ $productos = $pasteleria->obtenerProductos();
                 <div id="cart" class="bg-white p-3 rounded shadow">
                     <p>El carrito está vacío.</p>
                 </div>
+                <div class="text-center mt-4">
+                    <form action="confirmarPedido.php" method="POST">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-check-circle"></i> Confirmar Pedido
+                        </button>
+                    </form>
+                </div>
                 <button id="clear-cart" class="btn btn-danger mt-3"><i class="bi bi-trash"></i> Vaciar carrito</button>
+
+
+
             </div>
         </div>
 
