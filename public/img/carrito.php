@@ -15,9 +15,15 @@ $productPrice = isset($_POST['price']) ? floatval($_POST['price']) : null;
 switch ($action) {
     case 'add':
         if ($productId > 0) {
-            // Agregar producto al carrito
+            $numPisos = isset($_POST['numPisos']) ? intval($_POST['numPisos']) : 1;
+            $rellenos = isset($_POST['rellenos']) ? json_decode($_POST['rellenos'], true) : [];
+
             if (!isset($_SESSION['cart'][$productId])) {
-                $_SESSION['cart'][$productId] = ['quantity' => 0, 'price' => $productPrice];
+                $_SESSION['cart'][$productId] = [
+                    'quantity' => 0,
+                    'price' => $productPrice,
+                    'custom' => ['numPisos' => $numPisos, 'rellenos' => $rellenos],
+                ];
             }
             $_SESSION['cart'][$productId]['quantity']++;
         }

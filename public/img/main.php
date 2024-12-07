@@ -54,7 +54,7 @@ $productos = $pasteleria->obtenerProductos();
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <!-- Custom Styles -->
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="../css/styles.css">
 </head>
 
 <body class="bg-light">
@@ -71,12 +71,20 @@ $productos = $pasteleria->obtenerProductos();
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             <?= htmlspecialchars($producto->getNombre()) ?> -
                             <?= number_format($producto->getPrecio(), 2) ?>€
-                            <button class="btn btn-success btn-sm add-to-cart" data-id="<?= $producto->getId() ?>"
-                                data-price="<?= $producto->getPrecio() ?>">
-                                <i class="bi bi-cart-plus"></i> Agregar
-                            </button>
+                            <?php if ($producto instanceof Tarta): ?>
+                                <button class="btn btn-success btn-sm customize-tarta" data-id="<?= $producto->getId() ?>"
+                                    data-price="<?= $producto->getPrecio() ?>" data-category="Tarta">
+                                    <i class="bi bi-cart-plus"></i> Agregar
+                                </button>
+                            <?php else: ?>
+                                <button class="btn btn-success btn-sm add-to-cart" data-id="<?= $producto->getId() ?>"
+                                    data-price="<?= $producto->getPrecio() ?>">
+                                    <i class="bi bi-cart-plus"></i> Agregar
+                                </button>
+                            <?php endif; ?>
                         </li>
                     <?php endforeach; ?>
+
                 </ul>
             </div>
 

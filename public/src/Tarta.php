@@ -31,5 +31,19 @@ class Tarta extends Dulce
         $rellenos = implode(", ", $this->rellenos);
         return "Tarta: {$this->nombre}, Precio: {$this->precio}€, Categoría: {$this->categoria}, Rellenos: {$rellenos}, Número de Pisos: {$this->numPisos}, Descripción: {$this->descripcion}, Comensales Posibles: {$this->muestraComensalesPosibles()}";
     }
+
+    public function setOpcionesPersonalizadas(int $numPisos, array $rellenos): void
+    {
+        $this->numPisos = $numPisos;
+        $this->rellenos = $rellenos;
+    }
+
+    public function getOpcionesPersonalizadas(): string
+    {
+        return "Número de pisos: {$this->numPisos}, Rellenos: " . implode(", ", $this->rellenos);
+    }
+
+
+
 }
 ?>

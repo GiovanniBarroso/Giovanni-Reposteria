@@ -23,10 +23,17 @@ document.addEventListener("DOMContentLoaded", () => {
         let total = 0;
 
         for (const [id, info] of Object.entries(cartData)) {
+            let custom = "";
+
+            // Mostrar personalización solo si el producto es una tarta
+            if (info.custom && info.custom.numPisos && info.custom.rellenos.length > 0) {
+                custom = `(Pisos: ${info.custom.numPisos}, Rellenos: ${info.custom.rellenos.join(", ")})`;
+            }
+
             const item = document.createElement("div");
             item.classList.add("cart-item", "d-flex", "justify-content-between", "align-items-center", "mb-2");
             item.innerHTML = `
-                <span>${id} - ${info.quantity} x ${parseFloat(info.price).toFixed(2)}€</span>
+                <span>${id} - ${info.quantity} x ${parseFloat(info.price).toFixed(2)}€ ${custom}</span>
                 <div>
                     <button class="btn btn-sm btn-success add-quantity" data-id="${id}">+</button>
                     <button class="btn btn-sm btn-warning remove-quantity" data-id="${id}">-</button>
@@ -50,6 +57,10 @@ document.addEventListener("DOMContentLoaded", () => {
         addEventListeners();
         validateCart(cartData);
     }
+
+
+
+
 
     // Función para añadir eventos a los botones del carrito
     function addEventListeners() {
@@ -140,4 +151,78 @@ document.addEventListener("DOMContentLoaded", () => {
                 showMessage("Carrito vaciado correctamente.", "danger");
             });
     });
+
+
+    document.querySelectorAll(".customize-tarta").forEach((button) => {
+        button.addEventListener("click", () => {
+            const productId = button.getAttribute("data-id");
+            const productPrice = button.getAttribute("data-price");
+
+            // Mostrar formulario de personalización
+            const formHtml = `
+                <form id="customize-form" class="p-3 border rounded bg-light">
+                    <h5>Personalizar Tarta</h5>
+                    <label for="numPisos" class="form-label">Número de pisos:</label>
+                    <select id="numPisos" class="form-select mb-2" name="numPisos">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+                    <label for="rellenos" class="form-label">Rellenos:</label>
+                    <select id="rellenos" class="form-select mb-2" name="rellenos" multiple>
+                        <option value="chocolate">Chocolate</option>
+                        <option value="vainilla">Vainilla</option>
+                        <option value="nata">Nata</option>
+                        <option value="frutas">Frutas</option>
+                    </select>
+                    <button type="button" id="add-custom-tarta" class="btn btn-primary w-100">Agregar al carrito</button>
+                </form>
+            `;
+
+            const modalContainer = document.createElement("div");
+            modalContainer.innerHTML = formHtml;
+            document.body.appendChild(modalContainer);
+
+            // Registrar evento para el botón dentro del formulario dinámico
+            document.getElementById("add-custom-tarta").addEventListener("click", () => {
+                const numPisos = document.getElementById("numPisos").value;
+                const rellenos = Array.from(
+                    document.getElementById("rellenos").selectedOptions
+                ).map((option) => option.value);
+
+                // Enviar la información al servidor
+                fetch("../img/carrito.php", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: `action=add&id=${productId}&price=${productPrice}&numPisos=${numPisos}&rellenos=${JSON.stringify(
+                        rellenos
+                    )}`,
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        updateCart(data); // Actualizar el carrito
+                        showMessage("Tarta personalizada añadida al carrito.");
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                        showMessage("Error al agregar la tarta personalizada.", "danger");
+                    })
+                    .finally(() => {
+                        // Eliminar el formulario después de agregar la tarta
+                        modalContainer.remove();
+                    });
+            });
+        });
+    });
+
+
+
+
+
+
+
 });
+
+
+
+

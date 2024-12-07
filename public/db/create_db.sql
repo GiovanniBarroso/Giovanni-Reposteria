@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS detalle_pedidos (
     producto_id INT NOT NULL,
     cantidad INT NOT NULL,
     precio_unitario DECIMAL(10, 2) NOT NULL,
+    detalles TEXT NULL,
     FOREIGN KEY (pedido_id) REFERENCES pedidos(id),
     FOREIGN KEY (producto_id) REFERENCES productos(id)
 );
