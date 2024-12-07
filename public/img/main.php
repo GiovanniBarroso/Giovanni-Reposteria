@@ -28,8 +28,19 @@ try {
     $pedidosRecientes = [];
 }
 
+if (isset($_GET['success'])): ?>
+    <div class="alert alert-success text-center">
+        <?= htmlspecialchars($_GET['success']) ?>
+    </div>
+<?php elseif (isset($_GET['error'])): ?>
+    <div class="alert alert-danger text-center">
+        <?= htmlspecialchars($_GET['error']) ?>
+    </div>
+<?php endif;
+
 $pasteleria = new Pasteleria();
 $productos = $pasteleria->obtenerProductos();
+
 ?>
 
 <!DOCTYPE html>
@@ -75,6 +86,8 @@ $productos = $pasteleria->obtenerProductos();
                 <div id="cart" class="bg-white p-3 rounded shadow">
                     <p>El carrito está vacío.</p>
                 </div>
+                <p class="mt-3">El IVA aplicado es de <?= Dulce::getIVA() ?>%</p>
+
                 <div class="text-center mt-4">
                     <form action="confirmarPedido.php" method="POST">
                         <button id="confirm-button" type="submit" class="btn btn-primary w-100" disabled>

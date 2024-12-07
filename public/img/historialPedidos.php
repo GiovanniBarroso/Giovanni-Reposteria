@@ -1,54 +1,105 @@
 <?php
 session_start();
+require_once '../src/Pedido.php';
+require_once '../src/Bollo.php';
+require_once '../src/Chocolate.php';
+require_once '../src/Tarta.php';
+require_once '../db/Database.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: index.php?error=Debes iniciar sesión para ver tu historial");
+    header("Location: index.php");
     exit;
 }
-
-require_once '../db/Database.php';
 
 $clienteId = $_SESSION['user_id'];
 
 try {
     $db = Database::getConnection();
 
-    // Consulta para obtener los pedidos y sus detalles
-    $query = "SELECT p.id AS pedido_id, p.fecha, dp.cantidad, dp.precio_unitario, pr.nombre AS producto
+    // Obtener pedidos del cliente
+    $query = "SELECT p.id AS pedido_id, p.fecha, dp.producto_id, dp.cantidad, dp.precio_unitario, prod.nombre, prod.tipo
               FROM pedidos p
               JOIN detalle_pedidos dp ON p.id = dp.pedido_id
-              JOIN productos pr ON dp.producto_id = pr.id
+              JOIN productos prod ON dp.producto_id = prod.id
               WHERE p.cliente_id = :cliente_id
-              ORDER BY p.fecha DESC, dp.pedido_id";
+              ORDER BY p.fecha DESC";
     $stmt = $db->prepare($query);
     $stmt->bindValue(':cliente_id', $clienteId, PDO::PARAM_INT);
     $stmt->execute();
-    $pedidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Agrupar los productos por pedido
-    $pedidosAgrupados = [];
-    foreach ($pedidos as $pedido) {
-        $pedidoId = $pedido['pedido_id'];
-        if (!isset($pedidosAgrupados[$pedidoId])) {
-            $pedidosAgrupados[$pedidoId] = [
-                'fecha' => $pedido['fecha'],
-                'productos' => [],
-                'total' => 0, // Inicializa el total del pedido
-            ];
+    // Agrupar por pedido
+    $pedidos = [];
+    foreach ($result as $row) {
+        $pedidoId = $row['pedido_id'];
+        if (!isset($pedidos[$pedidoId])) {
+            $pedidos[$pedidoId] = new Pedido(
+                $pedidoId,
+                $clienteId,
+                [],
+                new DateTime($row['fecha'])
+            );
         }
-        $pedidosAgrupados[$pedidoId]['productos'][] = [
-            'producto' => $pedido['producto'],
-            'cantidad' => $pedido['cantidad'],
-            'precio_unitario' => $pedido['precio_unitario'],
-        ];
-        // Sumar al total
-        $pedidosAgrupados[$pedidoId]['total'] += $pedido['cantidad'] * $pedido['precio_unitario'];
+
+        // Crear el objeto Dulce según el tipo
+        $dulce = null;
+        switch ($row['tipo']) {
+            case 'Bollo':
+                $dulce = new Bollo(
+                    $row['producto_id'],
+                    $row['nombre'],
+                    $row['precio_unitario'],
+                    '',
+                    'Bollo',
+                    '' // Puedes usar el relleno si está disponible en la base de datos
+                );
+                break;
+
+            case 'Chocolate':
+                $dulce = new Chocolate(
+                    $row['producto_id'],
+                    $row['nombre'],
+                    $row['precio_unitario'],
+                    '',
+                    'Chocolate',
+                    0, // porcentajeCacao
+                    0  // peso
+                );
+                break;
+
+            case 'Tarta':
+                $dulce = new Tarta(
+                    $row['producto_id'],
+                    $row['nombre'],
+                    $row['precio_unitario'],
+                    '',
+                    'Tarta',
+                    [],  // rellenos
+                    1,   // numPisos
+                    2,   // minNumComensales
+                    2    // maxNumComensales
+                );
+                break;
+
+            default:
+                // Manejar productos con tipos desconocidos
+                throw new Exception("Tipo de producto desconocido: {$row['tipo']}");
+        }
+
+        if ($dulce) {
+            $pedidos[$pedidoId]->agregarDulce($dulce, $row['cantidad']);
+        }
     }
+
 } catch (PDOException $e) {
-    $pedidosAgrupados = [];
-    $error = $e->getMessage();
+    header("Location: main.php?error=Error al cargar el historial: " . $e->getMessage());
+    exit;
+} catch (Exception $e) {
+    header("Location: main.php?error=Error: " . $e->getMessage());
+    exit;
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="es">
@@ -62,43 +113,32 @@ try {
 
 <body class="bg-light">
     <div class="container mt-4">
-        <h1 class="text-center mb-4"><i class="bi bi-clock-history"></i> Historial de Pedidos</h1>
-        <?php if (!empty($pedidosAgrupados)): ?>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>ID Pedido</th>
-                        <th>Fecha</th>
-                        <th>Productos</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($pedidosAgrupados as $pedidoId => $pedido): ?>
-                        <tr>
-                            <td><?= htmlspecialchars($pedidoId) ?></td>
-                            <td><?= htmlspecialchars($pedido['fecha']) ?></td>
-                            <td>
-                                <ul>
-                                    <?php foreach ($pedido['productos'] as $producto): ?>
-                                        <li>
-                                            <?= htmlspecialchars($producto['producto']) ?>
-                                            (Cantidad: <?= $producto['cantidad'] ?>,
-                                            Precio unitario: <?= number_format($producto['precio_unitario'], 2) ?>€)
-                                        </li>
-                                    <?php endforeach; ?>
-                                </ul>
-                            </td>
-                            <td><?= number_format($pedido['total'], 2) ?>€</td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+        <h1 class="text-center mb-4">Historial de Pedidos</h1>
+        <?php if (!empty($pedidos)): ?>
+            <?php foreach ($pedidos as $pedido): ?>
+                <div class="card mb-3">
+                    <div class="card-header">
+                        Pedido #<?= $pedido->getId() ?> - Fecha: <?= $pedido->getFecha() ?> - Total:
+                        <?= number_format($pedido->getTotal(), 2) ?>€
+                    </div>
+                    <div class="card-body">
+                        <ul>
+                            <?php foreach ($pedido->getDulces() as $dulceId => $dulceData): ?>
+                                <li>
+                                    <?= $dulceData['dulce']->getNombre() ?> -
+                                    Cantidad: <?= $dulceData['cantidad'] ?> -
+                                    Precio Unitario: <?= number_format($dulceData['dulce']->getPrecio(), 2) ?>€
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                </div>
+            <?php endforeach; ?>
         <?php else: ?>
-            <p class="text-center text-muted">No hay pedidos recientes.</p>
+            <p class="text-center">No se han realizado pedidos aún.</p>
         <?php endif; ?>
         <div class="text-center mt-4">
-            <a href="main.php" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Volver</a>
+            <a href="main.php" class="btn btn-secondary">Volver</a>
         </div>
     </div>
 </body>

@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once '../src/Dulce.php'; // Incluimos la clase base para cálculos de IVA
 
 // Inicializar el carrito si no existe
 if (!isset($_SESSION['cart'])) {
@@ -49,6 +50,12 @@ switch ($action) {
         break;
 }
 
+// Calcular precios con IVA para todos los productos
+foreach ($_SESSION['cart'] as $id => &$item) {
+    $item['price_with_iva'] = $item['price'] * (1 + Dulce::getIVA() / 100); // Calcular IVA
+}
+
 // Responder con el estado actualizado del carrito
 echo json_encode($_SESSION['cart']);
 exit;
+?>

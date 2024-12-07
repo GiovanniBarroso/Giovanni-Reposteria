@@ -1,56 +1,50 @@
 <?php
 session_start();
-
-if (!isset($_SESSION['user_id'])) {
-    header("Location: index.php?error=Debes iniciar sesión para confirmar el pedido");
-    exit;
-}
-
-if (empty($_SESSION['cart'])) {
-    header("Location: main.php?error=El carrito está vacío");
-    exit;
-}
-
+require_once '../src/Pedido.php';
 require_once '../db/Database.php';
+
+if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
+    header("Location: main.php?error=El carrito está vacío.");
+    exit;
+}
 
 $clienteId = $_SESSION['user_id'];
 $carrito = $_SESSION['cart'];
 
 try {
     $db = Database::getConnection();
-    $db->beginTransaction();
+    $db->beginTransaction(); // Iniciar una transacción para garantizar integridad
 
-    // Crear un pedido
+    // Crear un nuevo pedido
     $query = "INSERT INTO pedidos (cliente_id, fecha) VALUES (:cliente_id, NOW())";
     $stmt = $db->prepare($query);
     $stmt->bindValue(':cliente_id', $clienteId, PDO::PARAM_INT);
     $stmt->execute();
 
-    // Obtener el ID del pedido recién creado
-    $pedidoId = $db->lastInsertId();
+    $pedidoId = $db->lastInsertId(); // Obtener el ID del nuevo pedido
 
-    // Insertar productos en detalle_pedidos con el precio actual
-    $queryDetalle = "INSERT INTO detalle_pedidos (pedido_id, producto_id, cantidad, precio_unitario) 
-                     VALUES (:pedido_id, :producto_id, :cantidad, :precio_unitario)";
-    $stmtDetalle = $db->prepare($queryDetalle);
-
+    // Añadir detalles del pedido
     foreach ($carrito as $productId => $info) {
-        $stmtDetalle->bindValue(':pedido_id', $pedidoId, PDO::PARAM_INT);
-        $stmtDetalle->bindValue(':producto_id', $productId, PDO::PARAM_INT);
-        $stmtDetalle->bindValue(':cantidad', $info['quantity'], PDO::PARAM_INT);
-        $stmtDetalle->bindValue(':precio_unitario', $info['price'], PDO::PARAM_STR); // Guardar precio actual
-        $stmtDetalle->execute();
+        $query = "INSERT INTO detalle_pedidos (pedido_id, producto_id, cantidad, precio_unitario)
+                  VALUES (:pedido_id, :producto_id, :cantidad, :precio_unitario)";
+        $stmt = $db->prepare($query);
+        $stmt->bindValue(':pedido_id', $pedidoId, PDO::PARAM_INT);
+        $stmt->bindValue(':producto_id', $productId, PDO::PARAM_INT);
+        $stmt->bindValue(':cantidad', $info['quantity'], PDO::PARAM_INT);
+        $stmt->bindValue(':precio_unitario', $info['price'], PDO::PARAM_STR);
+        $stmt->execute();
     }
 
-    $db->commit();
+    $db->commit(); // Confirmar la transacción
 
-    // Vaciar el carrito después de confirmar el pedido
+    // Vaciar el carrito
     unset($_SESSION['cart']);
 
-    header("Location: main.php?success=Pedido confirmado correctamente");
+    header("Location: main.php?success=Pedido confirmado correctamente.");
     exit;
+
 } catch (PDOException $e) {
-    $db->rollBack();
+    $db->rollBack(); // Revertir la transacción en caso de error
     header("Location: main.php?error=Error al confirmar el pedido: " . $e->getMessage());
     exit;
 }
