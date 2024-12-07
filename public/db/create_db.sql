@@ -14,7 +14,8 @@ CREATE TABLE IF NOT EXISTS clientes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
     usuario VARCHAR(50) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL
+    password VARCHAR(255) NOT NULL,
+    rol ENUM('cliente', 'admin') NOT NULL DEFAULT 'cliente'
 );
 
 CREATE TABLE IF NOT EXISTS pedidos (
@@ -38,9 +39,9 @@ CREATE TABLE IF NOT EXISTS detalle_pedidos (
 
 
 -- Insertar usuarios iniciales
-INSERT INTO clientes (nombre, usuario, password) VALUES
-('Administrador', 'admin', MD5('admin')), -- Encripta la contraseña
-('Usuario Genérico', 'usuario', MD5('usuario')); -- Encripta la contraseña
+INSERT INTO clientes (nombre, usuario, password, rol) VALUES
+('Administrador', 'admin', '$2y$10$V.i/FZ2uNj7jOxOTAFkvlOBALVXEJXYVoWwxpQ.v21wt5ty6ABKhe', 'admin'), -- Contraseña: admin
+('Usuario Genérico', 'usuario', '$2y$10$yOVBy8Y8yksMlAihFwiVuO7EFKksc89xqPxl.eMROj/3bZljPbHw2', 'cliente'); -- Contraseña: usuario
 
 
 INSERT INTO productos (nombre, precio, categoria, tipo) VALUES
@@ -48,5 +49,7 @@ INSERT INTO productos (nombre, precio, categoria, tipo) VALUES
 ('Chocolate Negro', 3.00, 'Chocolate', 'Chocolate'),
 ('Tarta de Queso', 15.00, 'Tarta', 'Tarta');
 
+
+SELECT * FROM clientes;
 SELECT * FROM productos;
 SELECT * FROM pedidos;

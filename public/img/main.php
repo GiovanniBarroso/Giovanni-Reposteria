@@ -2,10 +2,12 @@
 session_start();
 require_once __DIR__ . '/../src/Pasteleria.php';
 
-if (!isset($_SESSION['user']) || $_SESSION['user'] !== 'usuario') {
+if (!isset($_SESSION['user']) || $_SESSION['rol'] !== 'cliente') {
     header("Location: index.php");
     exit;
 }
+
+
 
 $clienteId = $_SESSION['user_id']; // Obtén el ID del usuario logueado
 

@@ -3,45 +3,56 @@ require_once __DIR__ . '/../db/Database.php';
 
 session_start();
 
-$db = Database::getConnection();
+try {
+    $db = Database::getConnection();
 
-// Obtener datos del formulario
-$username = $_POST['username'] ?? '';
-$password = $_POST['password'] ?? '';
-$remember = isset($_POST['remember']);
+    // Obtener datos del formulario
+    $username = trim($_POST['username'] ?? '');
+    $password = trim($_POST['password'] ?? '');
+    $remember = isset($_POST['remember']);
 
-// Buscar usuario en la base de datos
-$query = "SELECT * FROM clientes WHERE usuario = :username";
-$stmt = $db->prepare($query);
-$stmt->bindValue(':username', $username);
-$stmt->execute();
+    // Buscar usuario en la base de datos
+    $query = "SELECT * FROM clientes WHERE usuario = :username";
+    $stmt = $db->prepare($query);
+    $stmt->bindValue(':username', $username);
+    $stmt->execute();
 
-$user = $stmt->fetch(PDO::FETCH_ASSOC);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Comparar la contraseña usando MD5
-if ($user && md5($password) === $user['password']) {
-    // Iniciar sesión
-    $_SESSION['user'] = $username;
-    $_SESSION['user_id'] = $user['id'];
+    if ($user) {
+        if (password_verify($password, $user['password'])) {
+            // Iniciar sesión
+            $_SESSION['user'] = $username;
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['rol'] = $user['rol'];
 
-    // Configurar cookie si se marca "Recordarme"
-    if ($remember) {
-        setcookie('last_user', $username, time() + (86400 * 30), "/");
+            // Configurar cookie si se marca "Recordarme"
+            if ($remember) {
+                setcookie('last_user', $username, time() + (86400 * 30), "/");
+            } else {
+                setcookie('last_user', '', time() - 3600, "/");
+            }
+
+            // Redirigir según el rol del usuario
+            if ($user['rol'] === 'admin') {
+                header("Location: mainAdmin.php");
+            } else {
+                header("Location: main.php");
+            }
+            exit;
+        } else {
+            $_SESSION['error'] = "Contraseña incorrecta.";
+        }
     } else {
-        setcookie('last_user', '', time() - 3600, "/");
+        $_SESSION['error'] = "Usuario no encontrado.";
     }
 
-    // Redirigir según el usuario
-    if ($username === 'admin') {
-        header("Location: mainAdmin.php");
-    } else {
-        header("Location: main.php");
-    }
+    header("Location: index.php");
     exit;
 
-} else {
-    // Error de login
-    $_SESSION['error'] = "Credenciales incorrectas. Por favor, inténtelo de nuevo.";
+} catch (PDOException $e) {
+    // Manejo de errores en la base de datos
+    $_SESSION['error'] = "Error al iniciar sesión: " . $e->getMessage();
     header("Location: index.php");
     exit;
 }

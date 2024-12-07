@@ -5,17 +5,24 @@ require_once '../db/Database.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombre = trim($_POST['nombre']);
     $usuario = trim($_POST['usuario']);
-    $password = password_hash(trim($_POST['password']), PASSWORD_DEFAULT);
+    $password = trim($_POST['password']);
     $rol = (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin' && isset($_POST['rol'])) ? $_POST['rol'] : 'cliente';
+
+    // Validar que no haya campos vacíos
+    if (empty($nombre) || empty($usuario) || empty($password)) {
+        header('Location: registro.php?error=Todos los campos son obligatorios');
+        exit;
+    }
 
     try {
         $db = Database::getConnection();
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
         $query = "INSERT INTO clientes (nombre, usuario, password, rol) VALUES (:nombre, :usuario, :password, :rol)";
         $stmt = $db->prepare($query);
         $stmt->bindValue(':nombre', $nombre);
         $stmt->bindValue(':usuario', $usuario);
-        $stmt->bindValue(':password', $password);
+        $stmt->bindValue(':password', $hashedPassword);
         $stmt->bindValue(':rol', $rol);
 
         $stmt->execute();
@@ -23,11 +30,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: login.php?success=Usuario registrado correctamente');
         exit;
     } catch (PDOException $e) {
+        // Redirigir con un mensaje de error específico
         header('Location: registro.php?error=Error al registrar usuario: ' . $e->getMessage());
         exit;
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="es">
@@ -56,6 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="password" class="form-control" id="password" name="password" required>
             </div>
 
+            <!-- Mostrar selección de rol si el usuario es admin -->
             <?php if (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin'): ?>
                 <div class="mb-3">
                     <label for="rol" class="form-label">Rol</label>
