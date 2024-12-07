@@ -20,12 +20,22 @@ CREATE TABLE IF NOT EXISTS clientes (
 CREATE TABLE IF NOT EXISTS pedidos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     cliente_id INT NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (cliente_id) REFERENCES clientes(id)
+);
+
+
+CREATE TABLE IF NOT EXISTS detalle_pedidos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    pedido_id INT NOT NULL,
     producto_id INT NOT NULL,
     cantidad INT NOT NULL,
-    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (cliente_id) REFERENCES clientes(id),
+    precio_unitario DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (pedido_id) REFERENCES pedidos(id),
     FOREIGN KEY (producto_id) REFERENCES productos(id)
 );
+
+
 
 
 -- Insertar usuarios iniciales

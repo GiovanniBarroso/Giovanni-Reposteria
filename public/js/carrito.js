@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const cart = document.getElementById("cart");
     const clearCartButton = document.getElementById("clear-cart");
+    const confirmButton = document.getElementById("confirm-button"); // Botón "Confirmar Pedido"
 
     // Manejar clics en "Agregar al carrito"
     document.querySelectorAll(".add-to-cart").forEach(button => {
@@ -16,13 +17,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 body: `action=add&id=${productId}&price=${productPrice}`,
             })
                 .then(response => response.json())
-                .then(data => updateCart(data));
+                .then(data => {
+                    updateCart(data);
+                    validateCart(data); // Validar si el carrito está vacío
+                });
         });
     });
 
     // Manejar clic en "Vaciar carrito"
     clearCartButton.addEventListener("click", () => {
-        fetch("carrito.php", {
+        fetch("../img/carrito.php", {
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
@@ -30,7 +34,10 @@ document.addEventListener("DOMContentLoaded", () => {
             body: "action=clear",
         })
             .then(response => response.json())
-            .then(data => updateCart(data));
+            .then(data => {
+                updateCart(data);
+                validateCart(data); // Validar si el carrito está vacío
+            });
     });
 
     // Actualizar el carrito en el DOM
@@ -53,4 +60,13 @@ document.addEventListener("DOMContentLoaded", () => {
             cart.textContent = "El carrito está vacío.";
         }
     }
+
+    // Validar si el carrito está vacío y habilitar/deshabilitar el botón "Confirmar Pedido"
+    function validateCart(cartData) {
+        const isCartEmpty = Object.keys(cartData).length === 0; // Verificar si el carrito está vacío
+        confirmButton.disabled = isCartEmpty; // Deshabilitar si está vacío
+    }
+
+    // Ejecutar validación inicial al cargar la página
+    validateCart({});
 });

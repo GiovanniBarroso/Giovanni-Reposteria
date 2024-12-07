@@ -6,7 +6,7 @@ if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
 }
 
-// Obtener la acción y el producto enviado por el cliente
+// Obtener la acción y los datos del producto
 $action = $_POST['action'] ?? '';
 $productId = intval($_POST['id'] ?? 0);
 $productPrice = floatval($_POST['price'] ?? 0);
@@ -24,7 +24,7 @@ switch ($action) {
 
     case 'remove':
         if ($productId > 0 && isset($_SESSION['cart'][$productId])) {
-            // Reducir la cantidad o eliminar el producto si llega a 0
+            // Reducir cantidad o eliminar producto
             $_SESSION['cart'][$productId]['quantity']--;
             if ($_SESSION['cart'][$productId]['quantity'] <= 0) {
                 unset($_SESSION['cart'][$productId]);
@@ -38,6 +38,6 @@ switch ($action) {
         break;
 }
 
-// Devolver el contenido actualizado del carrito
+// Responder con el estado actualizado del carrito
 echo json_encode($_SESSION['cart']);
-?>
+exit;

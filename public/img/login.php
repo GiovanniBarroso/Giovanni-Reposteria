@@ -22,7 +22,7 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 if ($user && md5($password) === $user['password']) {
     // Iniciar sesión
     $_SESSION['user'] = $username;
-    $_SESSION['user_id'] = $user['id']; // Guardar el ID del usuario en la sesión
+    $_SESSION['user_id'] = $user['id'];
 
     // Configurar cookie si se marca "Recordarme"
     if ($remember) {
