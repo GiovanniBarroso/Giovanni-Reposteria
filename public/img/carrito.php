@@ -1,7 +1,7 @@
 <?php
 session_start();
-require_once '../db/Database.php';
 
+// Inicializar el carrito si no existe
 if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
 }
@@ -9,65 +9,46 @@ if (!isset($_SESSION['cart'])) {
 // Obtener la acción y los datos del producto
 $action = $_POST['action'] ?? '';
 $productId = intval($_POST['id'] ?? 0);
-$productPrice = floatval($_POST['price'] ?? 0);
-$response = ['status' => 'error', 'message' => '', 'cart' => []];
+$productPrice = isset($_POST['price']) ? floatval($_POST['price']) : null;
 
-try {
-    $db = Database::getConnection();
-
-    switch ($action) {
-        case 'add':
-            // Validar producto
-            $query = "SELECT precio FROM productos WHERE id = :id";
-            $stmt = $db->prepare($query);
-            $stmt->bindValue(':id', $productId, PDO::PARAM_INT);
-            $stmt->execute();
-            $product = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if ($product) {
-                // Agregar producto al carrito
-                if (!isset($_SESSION['cart'][$productId])) {
-                    $_SESSION['cart'][$productId] = ['quantity' => 0, 'price' => $product['precio']];
-                }
-                $_SESSION['cart'][$productId]['quantity']++;
-                $response['status'] = 'success';
-                $response['message'] = 'Producto añadido al carrito.';
-            } else {
-                $response['message'] = 'Producto no encontrado.';
+switch ($action) {
+    case 'add':
+        if ($productId > 0) {
+            // Agregar producto al carrito
+            if (!isset($_SESSION['cart'][$productId])) {
+                $_SESSION['cart'][$productId] = ['quantity' => 0, 'price' => $productPrice];
             }
-            break;
+            $_SESSION['cart'][$productId]['quantity']++;
+        }
+        break;
 
-        case 'remove':
-            if (isset($_SESSION['cart'][$productId])) {
-                // Reducir cantidad o eliminar producto
-                $_SESSION['cart'][$productId]['quantity']--;
-                if ($_SESSION['cart'][$productId]['quantity'] <= 0) {
-                    unset($_SESSION['cart'][$productId]);
-                }
-                $response['status'] = 'success';
-                $response['message'] = 'Producto eliminado del carrito.';
-            } else {
-                $response['message'] = 'Producto no encontrado en el carrito.';
+    case 'remove':
+        if ($productId > 0 && isset($_SESSION['cart'][$productId])) {
+            // Reducir cantidad del producto
+            $_SESSION['cart'][$productId]['quantity']--;
+            if ($_SESSION['cart'][$productId]['quantity'] <= 0) {
+                unset($_SESSION['cart'][$productId]);
             }
-            break;
+        }
+        break;
 
-        case 'clear':
-            // Vaciar el carrito
-            $_SESSION['cart'] = [];
-            $response['status'] = 'success';
-            $response['message'] = 'Carrito vaciado.';
-            break;
+    case 'remove_all':
+        if ($productId > 0 && isset($_SESSION['cart'][$productId])) {
+            // Eliminar el producto completamente del carrito
+            unset($_SESSION['cart'][$productId]);
+        }
+        break;
 
-        default:
-            $response['message'] = 'Acción no válida.';
-            break;
-    }
+    case 'clear':
+        // Vaciar el carrito por completo
+        $_SESSION['cart'] = [];
+        break;
 
-    // Incluir el estado del carrito
-    $response['cart'] = $_SESSION['cart'];
-} catch (PDOException $e) {
-    $response['message'] = 'Error al procesar el carrito: ' . $e->getMessage();
+    default:
+        // Acción no reconocida
+        break;
 }
 
-echo json_encode($response);
+// Responder con el estado actualizado del carrito
+echo json_encode($_SESSION['cart']);
 exit;
