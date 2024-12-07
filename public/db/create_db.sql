@@ -37,7 +37,6 @@ CREATE TABLE IF NOT EXISTS detalle_pedidos (
 
 
 
-
 -- Insertar usuarios iniciales
 INSERT INTO clientes (nombre, usuario, password) VALUES
 ('Administrador', 'admin', MD5('admin')), -- Encripta la contraseña
@@ -48,7 +47,6 @@ INSERT INTO productos (nombre, precio, categoria, tipo) VALUES
 ('Croissant', 2.50, 'Bollo', 'Bollo'),
 ('Chocolate Negro', 3.00, 'Chocolate', 'Chocolate'),
 ('Tarta de Queso', 15.00, 'Tarta', 'Tarta');
-
 
 SELECT * FROM productos;
 SELECT * FROM pedidos;
