@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Mostrar personalización solo si el producto es una tarta
             if (info.custom && info.custom.numPisos && info.custom.rellenos.length > 0) {
-                custom = `(Pisos: ${info.custom.numPisos}, Rellenos: ${info.custom.rellenos.join(", ")})`;
+                custom = `(Pisos: ${info.custom.numPisos}, Relleno: ${info.custom.rellenos.join(", ")})`;
             }
 
             const item = document.createElement("div");
@@ -168,9 +168,9 @@ document.addEventListener("DOMContentLoaded", () => {
                         <option value="2">2</option>
                         <option value="3">3</option>
                     </select>
-                    <label for="rellenos" class="form-label">Rellenos:</label>
+                    <label for="rellenos" class="form-label">Relleno:</label>
                     <select id="rellenos" class="form-select mb-2" name="rellenos" multiple>
-                        <option value="chocolate">Chocolate</option>
+                        <option value="choco">Chocolate</option>
                         <option value="vainilla">Vainilla</option>
                         <option value="nata">Nata</option>
                         <option value="frutas">Frutas</option>
@@ -218,11 +218,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-
-
-
 });
-
-
-
-

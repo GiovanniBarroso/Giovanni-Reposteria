@@ -32,17 +32,9 @@ CREATE TABLE IF NOT EXISTS detalle_pedidos (
     producto_id INT NOT NULL,
     cantidad INT NOT NULL,
     precio_unitario DECIMAL(10, 2) NOT NULL,
-    detalles TEXT NULL,
     FOREIGN KEY (pedido_id) REFERENCES pedidos(id),
     FOREIGN KEY (producto_id) REFERENCES productos(id)
 );
-
-
-
--- Insertar usuarios iniciales
-INSERT INTO clientes (nombre, usuario, password, rol) VALUES
-('Administrador', 'admin', '$2y$10$V.i/FZ2uNj7jOxOTAFkvlOBALVXEJXYVoWwxpQ.v21wt5ty6ABKhe', 'admin'), -- Contraseña: admin
-('Usuario Genérico', 'usuario', '$2y$10$yOVBy8Y8yksMlAihFwiVuO7EFKksc89xqPxl.eMROj/3bZljPbHw2', 'cliente'); -- Contraseña: usuario
 
 
 INSERT INTO productos (nombre, precio, categoria, tipo) VALUES

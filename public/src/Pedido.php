@@ -5,7 +5,7 @@ class Pedido
 {
     private int $id;
     private int $clienteId;
-    private array $dulces; // Lista de dulces con cantidades
+    private array $dulces;
     private float $total;
     private DateTime $fecha;
 
@@ -13,7 +13,7 @@ class Pedido
     {
         $this->id = $id;
         $this->clienteId = $clienteId;
-        $this->dulces = $dulces; // Ejemplo: [dulceId => ['dulce' => Dulce, 'cantidad' => int]]
+        $this->dulces = $dulces;
         $this->total = $this->calcularTotal();
         $this->fecha = $fecha ?? new DateTime();
     }
