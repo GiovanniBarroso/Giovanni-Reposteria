@@ -1,21 +1,129 @@
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Arial', sans-serif;
 }
 
-.card-header {
-    background-color: #6c757d;
+/* Navbar */
+.navbar {
+    transition: background-color 0.3s, color 0.3s;
 }
 
-h1,
-h2 {
-    font-weight: bold;
-}
-
-.btn-primary {
+.navbar-dark {
     background-color: #007bff;
-    border: none;
+    /* Modo claro */
 }
 
-.btn-primary:hover {
-    background-color: #0056b3;
+body.dark-mode .navbar-dark {
+    background-color: #1c1c1c;
+    /* Modo oscuro */
+    border-bottom: 1px solid #666;
+}
+
+.navbar-dark .nav-link {
+    color: #ffffff;
+}
+
+body.dark-mode .navbar-dark .nav-link {
+    color: #cccccc;
+}
+
+.navbar-dark .nav-link:hover {
+    color: #90caf9;
+}
+
+/* Sección de Bienvenida */
+.welcome-section {
+    background: linear-gradient(135deg, #6c63ff, #00bcd4);
+    /* Modo claro */
+    color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark-mode .welcome-section {
+    background: linear-gradient(135deg, #333333, #555555);
+    /* Modo oscuro */
+    color: #f0f0f0;
+}
+
+/* Título de Productos Disponibles */
+.products-title {
+    color: #007bff;
+    /* Modo claro */
+    transition: color 0.3s;
+}
+
+body.dark-mode .products-title {
+    color: #000000;
+    /* Negro en modo oscuro */
+}
+
+/* Tarjetas de Productos */
+.product-card {
+    background-color: #ffffff;
+    /* Modo claro */
+    color: #000000;
+    border: 1px solid #ddd;
+    transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+}
+
+body.dark-mode .product-card {
+    background-color: #2a2a2a;
+    /* Modo oscuro */
+    color: #e0e0e0;
+    border: 1px solid #444;
+}
+
+.product-card .card-title {
+    color: #212529;
+    /* Nombre del producto en modo claro */
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+body.dark-mode .product-card .card-title {
+    color: #ffffff;
+    /* Nombre del producto en modo oscuro */
+}
+
+.product-card .card-text {
+    color: #495057;
+    /* Descripción en modo claro */
+    transition: color 0.3s;
+}
+
+body.dark-mode .product-card .card-text {
+    color: #d6d6d6;
+    /* Descripción en modo oscuro */
+}
+
+/* Footer */
+.footer {
+    background: #343a40;
+    /* Modo claro */
+    color: white;
+    padding: 1rem;
+    text-align: center;
+    margin-top: 2rem;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark-mode .footer {
+    background-color: #1e1e1e;
+    /* Modo oscuro */
+    color: #cccccc;
+    border-top: 1px solid #444;
+}
+
+/* Botones */
+button.btn-outline-light {
+    border-color: #ffffff;
+    color: #ffffff;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+button.btn-outline-light:hover {
+    background-color: #ffffff;
+    color: #000000;
 }

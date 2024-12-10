@@ -7,7 +7,7 @@ if (!isset($_SESSION['user']) || $_SESSION['rol'] !== 'cliente') {
     exit;
 }
 
-$clienteId = $_SESSION['user_id']; // Obtén el ID del usuario logueado
+$clienteId = $_SESSION['user_id'];
 
 try {
     $db = Database::getConnection();
@@ -47,7 +47,7 @@ $productos = $pasteleria->obtenerProductos();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carrito de Compras</title>
+    <title>Pastelería - Bienvenido</title>
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
@@ -58,7 +58,7 @@ $productos = $pasteleria->obtenerProductos();
 <body class="bg-light">
 
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="#"><i class="bi bi-cupcake"></i> Pastelería</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -66,7 +66,6 @@ $productos = $pasteleria->obtenerProductos();
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link active" href="#">Inicio</a>
@@ -77,14 +76,14 @@ $productos = $pasteleria->obtenerProductos();
                 </ul>
                 <ul class="navbar-nav">
                     <!-- Modo Oscuro -->
-                    <li class="nav-item">
+                    <li class="nav-item me-2">
                         <button id="toggle-dark-mode" class="btn btn-sm btn-outline-light">Modo Oscuro</button>
                     </li>
                     <!-- Carrito -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarCart" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-cart"></i> Carrito
+                            <i class="bi bi-cart"></i> Carrito <span id="cartCount" class="badge bg-warning">0</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end p-3" id="cartDropdown">
                             <p class="text-muted">El carrito está vacío.</p>
@@ -101,57 +100,68 @@ $productos = $pasteleria->obtenerProductos();
 
     <!-- Contenido Principal -->
     <div class="container mt-4">
-        <h1 class="text-center mb-4"><i class="bi bi-person-circle"></i> Bienvenido,
-            <?= htmlspecialchars($_SESSION['user']) ?>
-        </h1>
+        <!-- Sección de bienvenida -->
+        <div class="welcome-section mb-4">
+            <h1><i class="bi bi-person-circle"></i> Bienvenido, <?= htmlspecialchars($_SESSION['user']) ?></h1>
+            <p>Explora nuestra selección de productos deliciosos y realiza tus pedidos al instante.</p>
+        </div>
 
         <!-- Productos -->
         <div class="row">
-            <h2 class="text-primary mb-4"><i class="bi bi-bag"></i> Productos Disponibles</h2>
+            <h2 class="products-title mb-4"><i class="bi bi-bag"></i> Productos Disponibles</h2>
+
             <?php foreach ($productos as $producto): ?>
                 <div class="col-md-4 mb-4">
-                    <div class="card">
-                        <!-- Imagen de Producto -->
+                    <div class="card product-card">
                         <img src="../img/<?= $producto->getId() ?>.jpg" class="card-img-top"
                             alt="<?= htmlspecialchars($producto->getNombre()) ?>">
                         <div class="card-body">
                             <h5 class="card-title"><?= htmlspecialchars($producto->getNombre()) ?></h5>
-                            <p class="card-text">Precio: <?= number_format($producto->getPrecio(), 2) ?>€</p>
                             <p class="card-text">Categoría: <?= htmlspecialchars($producto->getCategoria()) ?></p>
-                            <button class="btn btn-success w-100 add-to-cart" data-id="<?= $producto->getId() ?>"
-                                data-price="<?= $producto->getPrecio() ?>">
-
+                            <p class="card-text fw-bold">Precio: <?= number_format($producto->getPrecio(), 2) ?>€</p>
+                            <button class="btn btn-success w-100 add-to-cart" data-id="<?= $producto->getId() ?>">
                                 <i class="bi bi-cart-plus"></i> Agregar al Carrito
                             </button>
-
                         </div>
+
                     </div>
                 </div>
             <?php endforeach; ?>
         </div>
     </div>
 
+    <!-- Pie de Página -->
+    <footer class="footer text-center">
+        <p>© 2024 Pastelería. Todos los derechos reservados. <a href="#">Política de Privacidad</a></p>
+    </footer>
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/carrito.js" defer></script>
-
-
     <script>
         document.getElementById("toggle-dark-mode").addEventListener("click", () => {
-            document.body.classList.toggle("bg-dark");
-            document.body.classList.toggle("text-light");
-
-            const navbar = document.querySelector(".navbar");
-            navbar.classList.toggle("navbar-dark");
-            navbar.classList.toggle("navbar-light");
-            navbar.classList.toggle("bg-light");
-            navbar.classList.toggle("bg-dark");
+            document.body.classList.toggle("dark-mode");
 
             const button = document.getElementById("toggle-dark-mode");
-            button.textContent = document.body.classList.contains("bg-dark") ? "Modo Claro" : "Modo Oscuro";
-        });
-    </script>
+            button.textContent = document.body.classList.contains("dark-mode") ? "Modo Claro" : "Modo Oscuro";
 
+            localStorage.setItem("dark-mode", document.body.classList.contains("dark-mode"));
+        });
+
+        // Aplicar preferencia de modo oscuro al cargar la página
+        window.addEventListener("DOMContentLoaded", () => {
+            if (localStorage.getItem("dark-mode") === "true") {
+                document.body.classList.add("dark-mode");
+
+                // Ajustar el texto del botón
+                const button = document.getElementById("toggle-dark-mode");
+                button.textContent = "Modo Claro";
+            }
+        });
+
+
+
+    </script>
 </body>
 
 </html>

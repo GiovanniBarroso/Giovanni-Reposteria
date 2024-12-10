@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const cartDropdown = document.getElementById("cartDropdown");
+    const cartCount = document.getElementById("cartCount");
 
     // Actualizar el carrito en el servidor
     const updateCart = async (action, productId = null) => {
@@ -14,6 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (data.success) {
                 showMessage("Carrito actualizado correctamente", "success");
                 renderCart(data.cart); // Renderiza el carrito con los nuevos datos
+                updateCartCount(data.cart); // Actualiza el contador
             } else {
                 showMessage(data.error, "danger");
             }
@@ -32,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         setTimeout(() => {
             alertDiv.remove();
-        }, 2000); // Mostrar por 2 segundos
+        }, 1200); // Mostrar por 2 segundos
     };
 
     // Renderizar el carrito en el menú desplegable
@@ -92,15 +94,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 <button class="btn btn-danger w-100 clear-cart">Limpiar Carrito</button>
             </li>`;
 
-        // Reasignar eventos a los botones
-        assignCartEventListeners();
+        assignCartEventListeners(); // Reasignar eventos
+    };
+
+    // Actualizar contador del carrito
+    const updateCartCount = (cart) => {
+        const itemCount = Object.values(cart).reduce((total, item) => total + item.quantity, 0);
+        cartCount.textContent = itemCount; // Actualizar el número del contador
     };
 
     // Asignar eventos a los botones del carrito
     const assignCartEventListeners = () => {
         document.querySelectorAll(".add-item").forEach((button) => {
             button.addEventListener("click", (event) => {
-                event.stopPropagation(); // Prevenir cierre del dropdown
+                event.stopPropagation();
                 const id = button.getAttribute("data-id");
                 updateCart("add", id);
             });
@@ -150,6 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = await response.json();
             if (data.success) {
                 renderCart(data.cart);
+                updateCartCount(data.cart); // Actualiza el contador al abrir el carrito
             } else {
                 console.error("Error al cargar el carrito:", data.error);
             }
