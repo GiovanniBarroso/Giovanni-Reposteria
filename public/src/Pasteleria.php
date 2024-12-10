@@ -66,15 +66,52 @@ class Pasteleria
     public function guardarProducto(Dulce $d): bool
     {
         $db = Database::getConnection();
-        $query = "INSERT INTO productos (id, nombre, precio, categoria, tipo) VALUES (:id, :nombre, :precio, :categoria, :tipo)";
+
+        $query = "INSERT INTO productos 
+                  (nombre, precio, categoria, tipo, descripcion, porcentajeCacao, peso, rellenos, numPisos, minComensales, maxComensales) 
+                  VALUES (:nombre, :precio, :categoria, :tipo, :descripcion, :porcentajeCacao, :peso, :rellenos, :numPisos, :minComensales, :maxComensales)";
+
         $stmt = $db->prepare($query);
-        $stmt->bindValue(':id', $d->getId());
+
+        // Valores comunes
         $stmt->bindValue(':nombre', $d->getNombre());
         $stmt->bindValue(':precio', $d->getPrecio());
         $stmt->bindValue(':categoria', $d->getCategoria());
-        $stmt->bindValue(':tipo', get_class($d)); // Obtiene el nombre de la subclase
+        $stmt->bindValue(':tipo', get_class($d));
+        $stmt->bindValue(':descripcion', $d->getDescripcion());
+
+        // Valores específicos según el tipo
+        if ($d instanceof Chocolate) {
+            $stmt->bindValue(':porcentajeCacao', $d->getPorcentajeCacao());
+            $stmt->bindValue(':peso', $d->getPeso());
+            $stmt->bindValue(':rellenos', null);
+            $stmt->bindValue(':numPisos', null);
+            $stmt->bindValue(':minComensales', null);
+            $stmt->bindValue(':maxComensales', null);
+        } elseif ($d instanceof Tarta) {
+            $stmt->bindValue(':porcentajeCacao', null);
+            $stmt->bindValue(':peso', null);
+            $stmt->bindValue(':rellenos', implode(',', $d->getRellenos()));
+            $stmt->bindValue(':numPisos', $d->getNumPisos());
+            $stmt->bindValue(':minComensales', $d->getMinNumComensales());
+            $stmt->bindValue(':maxComensales', $d->getMaxNumComensales());
+        } else {
+            // Otros tipos (Bollo)
+            $stmt->bindValue(':porcentajeCacao', null);
+            $stmt->bindValue(':peso', null);
+            $stmt->bindValue(':rellenos', null);
+            $stmt->bindValue(':numPisos', null);
+            $stmt->bindValue(':minComensales', null);
+            $stmt->bindValue(':maxComensales', null);
+        }
+
         return $stmt->execute();
     }
+
+
+
+
+
 
 
     public function obtenerProductos(): array
@@ -88,7 +125,7 @@ class Pasteleria
             switch ($row['tipo']) {
                 case 'Bollo':
                     $productos[] = new Bollo(
-                        $row['id'], // Incluye el id
+                        $row['id'],
                         $row['nombre'],
                         $row['precio'],
                         $row['descripcion'] ?? '',
@@ -99,7 +136,7 @@ class Pasteleria
 
                 case 'Chocolate':
                     $productos[] = new Chocolate(
-                        $row['id'], // Incluye el id
+                        $row['id'],
                         $row['nombre'],
                         $row['precio'],
                         $row['descripcion'] ?? '',
@@ -111,15 +148,15 @@ class Pasteleria
 
                 case 'Tarta':
                     $productos[] = new Tarta(
-                        $row['id'], // Incluye el id
+                        $row['id'],
                         $row['nombre'],
                         $row['precio'],
                         $row['descripcion'] ?? '',
                         $row['categoria'],
                         explode(',', $row['rellenos'] ?? ''),
                         $row['numPisos'] ?? 1,
-                        $row['minNumComensales'] ?? 2,
-                        $row['maxNumComensales'] ?? 2
+                        $row['minComensales'] ?? 2,
+                        $row['maxComensales'] ?? 2
                     );
                     break;
 
@@ -132,18 +169,116 @@ class Pasteleria
     }
 
 
+    public function obtenerClientes(): array
+    {
+        $db = Database::getConnection();
+        $query = "SELECT id, nombre, usuario, rol FROM clientes";
+        $stmt = $db->query($query);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    public function actualizarCliente(int $id, string $nombre, string $usuario, string $rol): bool
+    {
+        $db = Database::getConnection();
+        $query = "UPDATE clientes SET nombre = :nombre, usuario = :usuario, rol = :rol WHERE id = :id";
+        $stmt = $db->prepare($query);
+
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->bindValue(':nombre', $nombre);
+        $stmt->bindValue(':usuario', $usuario);
+        $stmt->bindValue(':rol', $rol);
+
+        return $stmt->execute();
+    }
+
+
+
+    public function eliminarCliente(int $id): bool
+    {
+        $db = Database::getConnection();
+        $query = "DELETE FROM clientes WHERE id = :id";
+        $stmt = $db->prepare($query);
+
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
+
+
+    public function buscarClientePorId(int $id): ?array
+    {
+        $db = Database::getConnection();
+        $query = "SELECT id, nombre, usuario, rol FROM clientes WHERE id = :id";
+        $stmt = $db->prepare($query);
+
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $cliente = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $cliente ? $cliente : null;
+    }
+
+
+
 
     public function actualizarProducto(int $id, Dulce $d): bool
     {
         $db = Database::getConnection();
-        $query = "UPDATE productos SET nombre = :nombre, precio = :precio, categoria = :categoria WHERE id = :id";
+
+        // Crear la consulta SQL con todas las columnas
+        $query = "UPDATE productos 
+              SET nombre = :nombre, 
+                  precio = :precio, 
+                  categoria = :categoria, 
+                  descripcion = :descripcion, 
+                  porcentajeCacao = :porcentajeCacao, 
+                  peso = :peso, 
+                  rellenos = :rellenos, 
+                  numPisos = :numPisos, 
+                  minComensales = :minComensales, 
+                  maxComensales = :maxComensales 
+              WHERE id = :id";
+
         $stmt = $db->prepare($query);
-        $stmt->bindValue(':id', $id);
+
+        // Valores comunes
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->bindValue(':nombre', $d->getNombre());
         $stmt->bindValue(':precio', $d->getPrecio());
         $stmt->bindValue(':categoria', $d->getCategoria());
+        $stmt->bindValue(':descripcion', $d->getDescripcion());
+
+        // Valores específicos según el tipo
+        if ($d instanceof Chocolate) {
+            $stmt->bindValue(':porcentajeCacao', $d->getPorcentajeCacao());
+            $stmt->bindValue(':peso', $d->getPeso());
+            $stmt->bindValue(':rellenos', null);
+            $stmt->bindValue(':numPisos', null);
+            $stmt->bindValue(':minComensales', null);
+            $stmt->bindValue(':maxComensales', null);
+        } elseif ($d instanceof Tarta) {
+            $stmt->bindValue(':porcentajeCacao', null);
+            $stmt->bindValue(':peso', null);
+            $stmt->bindValue(':rellenos', implode(',', $d->getRellenos()));
+            $stmt->bindValue(':numPisos', $d->getNumPisos());
+            $stmt->bindValue(':minComensales', $d->getMinNumComensales());
+            $stmt->bindValue(':maxComensales', $d->getMaxNumComensales());
+        } else {
+            // Otros tipos (Bollo)
+            $stmt->bindValue(':porcentajeCacao', null);
+            $stmt->bindValue(':peso', null);
+            $stmt->bindValue(':rellenos', null);
+            $stmt->bindValue(':numPisos', null);
+            $stmt->bindValue(':minComensales', null);
+            $stmt->bindValue(':maxComensales', null);
+        }
+
         return $stmt->execute();
     }
+
+
 
 
     public function eliminarProducto(int $id): bool

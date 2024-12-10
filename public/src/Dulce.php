@@ -54,9 +54,19 @@ abstract class Dulce implements Resumible
         return $this->descripcion;
     }
 
+    public function setDescripcion(string $descripcion): void
+    {
+        $this->descripcion = $descripcion;
+    }
+
     public function getCategoria(): string
     {
         return $this->categoria;
+    }
+
+    public function setCategoria(string $categoria): void
+    {
+        $this->categoria = $categoria;
     }
 
     public static function getIVA(): float

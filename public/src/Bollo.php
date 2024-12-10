@@ -5,7 +5,7 @@ class Bollo extends Dulce
 {
     private string $relleno;
 
-    public function __construct(int $id, string $nombre, float $precio, string $descripcion, string $categoria, string $relleno)
+    public function __construct(?int $id, string $nombre, float $precio, string $descripcion, string $categoria, string $relleno)
     {
         parent::__construct($id, $nombre, $precio, $descripcion, $categoria);
         $this->relleno = $relleno;

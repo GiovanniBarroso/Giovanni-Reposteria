@@ -7,8 +7,16 @@ CREATE TABLE IF NOT EXISTS productos (
     nombre VARCHAR(100) NOT NULL,
     precio DECIMAL(10, 2) NOT NULL,
     categoria VARCHAR(50) NOT NULL,
-    tipo VARCHAR(20) NOT NULL
+    tipo VARCHAR(20) NOT NULL,
+    descripcion TEXT NULL,
+    porcentajeCacao DECIMAL(5, 2) NULL,
+    peso DECIMAL(10, 2) NULL,
+    rellenos TEXT NULL,
+    numPisos INT NULL,
+    minComensales INT NULL,
+    maxComensales INT NULL
 );
+
 
 CREATE TABLE IF NOT EXISTS clientes (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -36,13 +44,36 @@ CREATE TABLE IF NOT EXISTS detalle_pedidos (
     FOREIGN KEY (producto_id) REFERENCES productos(id)
 );
 
+CREATE TABLE detalles_chocolate (
+    producto_id INT PRIMARY KEY,
+    porcentajeCacao DECIMAL(5, 2) NOT NULL,
+    peso DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (producto_id) REFERENCES productos(id)
+);
 
-INSERT INTO productos (nombre, precio, categoria, tipo) VALUES
-('Croissant', 2.50, 'Bollo', 'Bollo'),
-('Chocolate Negro', 3.00, 'Chocolate', 'Chocolate'),
-('Tarta de Queso', 15.00, 'Tarta', 'Tarta');
+
+CREATE TABLE detalles_tarta (
+    producto_id INT PRIMARY KEY,
+    rellenos TEXT NOT NULL,
+    numPisos INT NOT NULL,
+    minComensales INT NOT NULL,
+    maxComensales INT NOT NULL,
+    FOREIGN KEY (producto_id) REFERENCES productos(id)
+);
+
+
+INSERT INTO productos (nombre, precio, categoria, tipo, descripcion, porcentajeCacao, peso, rellenos, numPisos, minComensales, maxComensales) VALUES
+('Croissant', 2.50, 'Bollo', 'Bollo', 'Un bollo clásico de mantequilla', NULL, NULL, NULL, NULL, NULL, NULL),
+('Chocolate Negro', 3.00, 'Chocolate', 'Chocolate', 'Chocolate con un alto porcentaje de cacao', 75.00, 200.00, NULL, NULL, NULL, NULL),
+('Tarta de Queso', 15.00, 'Tarta', 'Tarta', 'Tarta cremosa con base de galleta', NULL, NULL, 'queso, crema', 1, 4, 8),
+('Tarta de Cebolla', 12.95, 'Tarta', 'Tarta', 'Tarta salada de cebolla caramelizada', NULL, NULL, 'cebolla, queso', 1, 4, 6),
+('Chocolate Azul', 12.00, 'Chocolate', 'Chocolate', 'Chocolate con colorante azul', 60.00, 150.00, NULL, NULL, NULL, NULL);
+
 
 
 SELECT * FROM clientes;
 SELECT * FROM productos;
 SELECT * FROM pedidos;
+
+
+
