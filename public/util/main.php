@@ -7,8 +7,6 @@ if (!isset($_SESSION['user']) || $_SESSION['rol'] !== 'cliente') {
     exit;
 }
 
-
-
 $clienteId = $_SESSION['user_id']; // Obtén el ID del usuario logueado
 
 try {
@@ -78,12 +76,11 @@ $productos = $pasteleria->obtenerProductos();
                     </li>
                 </ul>
                 <ul class="navbar-nav">
+                    <!-- Modo Oscuro -->
+                    <li class="nav-item">
+                        <button id="toggle-dark-mode" class="btn btn-sm btn-outline-light">Modo Oscuro</button>
+                    </li>
                     <!-- Carrito -->
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <button id="toggle-dark-mode" class="btn btn-sm btn-outline-light">Modo Oscuro</button>
-                        </li>
-                    </ul>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarCart" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
@@ -93,7 +90,7 @@ $productos = $pasteleria->obtenerProductos();
                             <p class="text-muted">El carrito está vacío.</p>
                         </ul>
                     </li>
-                    <!-- Usuario -->
+                    <!-- Cerrar Sesión -->
                     <li class="nav-item">
                         <a class="nav-link" href="logout.php"><i class="bi bi-box-arrow-left"></i> Cerrar sesión</a>
                     </li>
@@ -115,7 +112,7 @@ $productos = $pasteleria->obtenerProductos();
                 <div class="col-md-4 mb-4">
                     <div class="card">
                         <!-- Imagen de Producto -->
-                        <img src="../img/productos/<?= $producto->getId() ?>.jpg" class="card-img-top"
+                        <img src="../img/<?= $producto->getId() ?>.jpg" class="card-img-top"
                             alt="<?= htmlspecialchars($producto->getNombre()) ?>">
                         <div class="card-body">
                             <h5 class="card-title"><?= htmlspecialchars($producto->getNombre()) ?></h5>

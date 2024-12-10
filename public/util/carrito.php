@@ -21,7 +21,13 @@ try {
     $db = Database::getConnection();
 
     switch ($action) {
+        case 'get':
+            // Devolver el carrito actual
+            echo json_encode(['success' => true, 'cart' => $_SESSION['cart']]);
+            exit;
+
         case 'add':
+            // Agregar un producto al carrito
             if ($productId > 0) {
                 $stmt = $db->prepare("SELECT nombre, precio FROM productos WHERE id = :id");
                 $stmt->bindValue(':id', $productId, PDO::PARAM_INT);
@@ -45,15 +51,27 @@ try {
             break;
 
         case 'remove':
+            // Eliminar una unidad de un producto del carrito
             if ($productId > 0 && isset($_SESSION['cart'][$productId])) {
                 $_SESSION['cart'][$productId]['quantity']--;
                 if ($_SESSION['cart'][$productId]['quantity'] <= 0) {
-                    unset($_SESSION['cart'][$productId]);
+                    unset($_SESSION['cart'][$productId]); // Eliminar producto si la cantidad llega a 0
                 }
+            } else {
+                echo json_encode(['success' => false, 'error' => 'Producto no encontrado en el carrito']);
+                exit;
+            }
+            break;
+
+        case 'delete':
+            // Eliminar completamente un producto del carrito
+            if ($productId > 0 && isset($_SESSION['cart'][$productId])) {
+                unset($_SESSION['cart'][$productId]);
             }
             break;
 
         case 'clear':
+            // Vaciar todo el carrito
             $_SESSION['cart'] = [];
             break;
 
@@ -62,6 +80,7 @@ try {
             exit;
     }
 
+    // Devolver el carrito actualizado
     echo json_encode(['success' => true, 'cart' => $_SESSION['cart']]);
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'error' => 'Error interno del servidor: ' . $e->getMessage()]);
