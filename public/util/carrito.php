@@ -3,31 +3,34 @@ session_start();
 require_once '../src/Dulce.php';
 require_once '../db/Database.php';
 
+
 // Verificar si el método es POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(['success' => false, 'error' => 'Método no permitido']);
     exit;
 }
 
+
 // Inicializar el carrito si no existe
 if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = [];
 }
+
 
 $action = $_POST['action'] ?? '';
 $productId = intval($_POST['id'] ?? 0);
 
 try {
     $db = Database::getConnection();
-
     switch ($action) {
+
         case 'get':
-            // Devolver el carrito actual
             echo json_encode(['success' => true, 'cart' => $_SESSION['cart']]);
             exit;
 
+
         case 'add':
-            // Agregar un producto al carrito
+
             if ($productId > 0) {
                 $stmt = $db->prepare("SELECT nombre, precio FROM productos WHERE id = :id");
                 $stmt->bindValue(':id', $productId, PDO::PARAM_INT);
@@ -50,13 +53,15 @@ try {
             }
             break;
 
+
         case 'remove':
             // Eliminar una unidad de un producto del carrito
             if ($productId > 0 && isset($_SESSION['cart'][$productId])) {
                 $_SESSION['cart'][$productId]['quantity']--;
                 if ($_SESSION['cart'][$productId]['quantity'] <= 0) {
-                    unset($_SESSION['cart'][$productId]); // Eliminar producto si la cantidad llega a 0
+                    unset($_SESSION['cart'][$productId]);
                 }
+
             } else {
                 echo json_encode(['success' => false, 'error' => 'Producto no encontrado en el carrito']);
                 exit;
@@ -79,6 +84,7 @@ try {
             echo json_encode(['success' => false, 'error' => 'Acción no válida']);
             exit;
     }
+
 
     // Devolver el carrito actualizado
     echo json_encode(['success' => true, 'cart' => $_SESSION['cart']]);

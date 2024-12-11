@@ -14,8 +14,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tipo = $_POST['tipo'];
     $descripcion = $_POST['descripcion'] ?? '';
 
+
     // Crear un producto basado en el tipo
     $producto = null;
+
 
     // Crear un producto basado en el tipo
     switch ($tipo) {
@@ -44,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
 
+
     // Guardar el producto en la base de datos
     $exito = $pasteleria->guardarProducto($producto);
 
@@ -53,8 +56,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: mainAdmin.php?error=No se pudo añadir el producto");
     }
     exit;
+
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="es">
@@ -67,19 +72,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 
+
 <body class="bg-light">
     <div class="container py-5">
         <div class="card mx-auto shadow-lg" style="max-width: 600px;">
             <div class="card-body">
                 <h1 class="card-title text-center text-primary mb-4">Agregar Producto</h1>
-
                 <form method="post" action="agregarProducto.php">
+
+
                     <!-- Nombre -->
                     <div class="mb-3">
                         <label for="nombre" class="form-label">Nombre</label>
                         <input type="text" class="form-control" id="nombre" name="nombre"
                             placeholder="Introduce el nombre del producto" required>
                     </div>
+
 
                     <!-- Precio -->
                     <div class="mb-3">
@@ -88,6 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             placeholder="Ejemplo: 19.99" required>
                     </div>
 
+
                     <!-- Categoría -->
                     <div class="mb-3">
                         <label for="categoria" class="form-label">Categoría</label>
@@ -95,12 +104,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             placeholder="Introduce la categoría" required>
                     </div>
 
+
                     <!-- Descripción -->
                     <div class="mb-3">
                         <label for="descripcion" class="form-label">Descripción</label>
                         <textarea class="form-control" id="descripcion" name="descripcion" rows="3"
                             placeholder="Introduce una descripción"></textarea>
                     </div>
+
 
                     <!-- Tipo -->
                     <div class="mb-3">
@@ -113,6 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </select>
                     </div>
 
+
                     <!-- Opciones específicas por tipo -->
                     <div id="tipo-bollo" class="tipo-opciones d-none">
                         <div class="mb-3">
@@ -121,6 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 placeholder="Ejemplo: Crema, Chocolate">
                         </div>
                     </div>
+
 
                     <div id="tipo-chocolate" class="tipo-opciones d-none">
                         <div class="mb-3">
@@ -133,6 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <input type="number" class="form-control" id="peso" name="peso" placeholder="Ejemplo: 100">
                         </div>
                     </div>
+
 
                     <div id="tipo-tarta" class="tipo-opciones d-none">
                         <div class="mb-3">
@@ -157,6 +171,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                     </div>
 
+
                     <!-- Botones de acción -->
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-primary">Añadir Producto</button>
@@ -167,6 +182,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 
+
     <script>
         function updateForm() {
             const tipo = document.getElementById('tipo').value;
@@ -175,6 +191,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (target) target.classList.remove('d-none');
         }
     </script>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>

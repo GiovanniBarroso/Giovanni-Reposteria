@@ -1,20 +1,23 @@
 <?php
+
 session_start();
+require_once '../src/Pasteleria.php';
+
 
 if ($_SESSION['user'] !== 'admin') {
     header("Location: index.php?error=Acceso no autorizado");
     exit;
 }
 
-require_once '../src/Pasteleria.php';
-
 if (!isset($_GET['id'])) {
     header("Location: mainAdmin.php?error=Falta el ID del producto");
     exit;
 }
 
+
 $id = intval($_GET['id']);
 $pasteleria = new Pasteleria();
+
 
 
 if ($pasteleria->eliminarProducto($id) === true) {

@@ -1,16 +1,18 @@
 <?php
+
 session_start();
+require_once '../src/Pasteleria.php';
+
 
 if (!isset($_SESSION['user'])) {
     header("Location: index.php?error=Acceso no autorizado");
     exit;
 }
 
-require_once '../src/Pasteleria.php';
-
 $userId = $_SESSION['user_id'];
 $pasteleria = new Pasteleria();
 $cliente = $pasteleria->buscarClientePorId($userId);
+
 
 if (!$cliente) {
     header("Location: main.php?error=Cliente no encontrado");
@@ -43,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = $error ?: "Error al actualizar el perfil. Por favor, verifica los datos.";
     }
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -56,6 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="../css/styles3.css">
 </head>
 
+
 <body>
     <div class="container mt-5">
         <div class="form-container">
@@ -65,6 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="alert alert-danger text-center"> <?= $error ?> </div>
             <?php endif; ?>
 
+
             <form method="POST">
                 <!-- Nombre -->
                 <div class="mb-3">
@@ -73,12 +78,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         required>
                 </div>
 
+
                 <!-- Usuario -->
                 <div class="mb-3">
                     <label for="usuario" class="form-label">Usuario</label>
                     <input type="text" class="form-control" id="usuario" name="usuario"
                         value="<?= $cliente['usuario'] ?>" required>
                 </div>
+
 
                 <!-- Contraseña actual -->
                 <div class="mb-3">
@@ -87,12 +94,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         placeholder="Introduce tu contraseña actual">
                 </div>
 
+
                 <!-- Nueva contraseña -->
                 <div class="mb-3">
                     <label for="passwordNueva" class="form-label">Nueva Contraseña</label>
                     <input type="password" class="form-control" id="passwordNueva" name="passwordNueva"
                         placeholder="Introduce una nueva contraseña (opcional)">
                 </div>
+
 
                 <!-- Botones -->
                 <div class="d-flex justify-content-between">

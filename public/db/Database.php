@@ -3,9 +3,11 @@ class Database
 {
     private static ?PDO $instance = null;
 
+
+    // Constructor privado para evitar instancias
     private function __construct()
     {
-        // Constructor privado para evitar instancias
+
     }
 
     public static function getConnection(): PDO

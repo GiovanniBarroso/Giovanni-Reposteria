@@ -1,6 +1,8 @@
 <?php
+
 session_start();
 require_once '../src/Pasteleria.php';
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombre = trim($_POST['nombre']);
@@ -46,6 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="card-body">
                 <h1 class="card-title text-center text-primary mb-4">Registro de Usuario</h1>
 
+
                 <!-- Mensajes de error o éxito -->
                 <?php if (isset($_GET['error'])): ?>
                     <div class="alert alert-danger text-center">
@@ -55,6 +58,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <!-- Formulario de registro -->
                 <form action="registro.php" method="POST">
+
+
                     <!-- Nombre Completo -->
                     <div class="mb-3">
                         <label for="nombre" class="form-label">Nombre Completo</label>
@@ -62,12 +67,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             placeholder="Introduce tu nombre completo" required>
                     </div>
 
+
                     <!-- Nombre de Usuario -->
                     <div class="mb-3">
                         <label for="usuario" class="form-label">Usuario</label>
                         <input type="text" class="form-control" id="usuario" name="usuario"
                             placeholder="Crea un nombre de usuario" required>
                     </div>
+
 
                     <!-- Contraseña -->
                     <div class="mb-3 position-relative">
@@ -88,6 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 </form>
 
+
                 <!-- Enlace de volver -->
                 <div class="text-center mt-3">
                     <a href="index.php" class="btn btn-secondary">
@@ -97,6 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
     </div>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -111,6 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             });
         });
     </script>
+
 
 </body>
 

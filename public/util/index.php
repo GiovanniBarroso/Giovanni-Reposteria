@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 $success = $_SESSION['success'] ?? null;
 $error = $_SESSION['error'] ?? null;
@@ -8,7 +9,6 @@ unset($_SESSION['success']);
 unset($_SESSION['error']);
 $last_user = $_COOKIE['last_user'] ?? '';
 ?>
-
 
 
 <!DOCTYPE html>
@@ -23,6 +23,7 @@ $last_user = $_COOKIE['last_user'] ?? '';
 </head>
 
 <body class="bg-light">
+
     <div class="container d-flex justify-content-center align-items-center vh-100">
         <div class="card w-100 shadow-lg" style="max-width: 500px;">
             <div class="card-body">
@@ -30,12 +31,14 @@ $last_user = $_COOKIE['last_user'] ?? '';
 
                 <!-- Formulario de login -->
                 <form action="login.php" method="POST">
+
                     <!-- Usuario -->
                     <div class="mb-3">
                         <label for="username" class="form-label">Usuario</label>
                         <input type="text" class="form-control" id="username" name="username" placeholder="Tu usuario"
                             required>
                     </div>
+
                     <!-- Contraseña -->
                     <div class="mb-3 position-relative">
                         <label for="password" class="form-label">Contraseña</label>
@@ -48,15 +51,18 @@ $last_user = $_COOKIE['last_user'] ?? '';
                         </div>
                     </div>
 
+
                     <!-- Recordarme -->
                     <div class="form-check mb-3">
                         <input type="checkbox" class="form-check-input" id="remember" name="remember">
                         <label for="remember" class="form-check-label">Recordarme</label>
                     </div>
+
                     <!-- Botón de inicio de sesión -->
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary">Iniciar sesión</button>
                     </div>
+
                 </form>
 
                 <!-- Enlace de registro -->
@@ -68,6 +74,7 @@ $last_user = $_COOKIE['last_user'] ?? '';
             </div>
         </div>
     </div>
+
 
     <!-- Modal de éxito -->
     <?php if ($success): ?>
@@ -86,6 +93,7 @@ $last_user = $_COOKIE['last_user'] ?? '';
         </div>
     <?php endif; ?>
 
+
     <!-- Modal de error -->
     <?php if ($error): ?>
         <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
@@ -102,6 +110,7 @@ $last_user = $_COOKIE['last_user'] ?? '';
             </div>
         </div>
     <?php endif; ?>
+
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
@@ -120,6 +129,7 @@ $last_user = $_COOKIE['last_user'] ?? '';
         });
     </script>
 
+
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const passwordInput = document.getElementById("password");
@@ -132,6 +142,7 @@ $last_user = $_COOKIE['last_user'] ?? '';
             });
         });
     </script>
+
 
 </body>
 

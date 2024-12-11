@@ -19,21 +19,23 @@ class Tarta extends Dulce
     }
 
 
-
     public function getRellenos(): array
     {
         return $this->rellenos;
     }
+
 
     public function getNumPisos(): int
     {
         return $this->numPisos;
     }
 
+
     public function getMinNumComensales(): int
     {
         return $this->minNumComensales;
     }
+
 
     public function getMaxNumComensales(): int
     {
@@ -49,11 +51,13 @@ class Tarta extends Dulce
         return "De {$this->minNumComensales} a {$this->maxNumComensales} comensales";
     }
 
+
     public function muestraResumen(): string
     {
         $rellenos = implode(", ", $this->rellenos);
         return "Tarta: {$this->nombre}, Precio: {$this->precio}€, Categoría: {$this->categoria}, Rellenos: {$rellenos}, Número de Pisos: {$this->numPisos}, Descripción: {$this->descripcion}, Comensales Posibles: {$this->muestraComensalesPosibles()}";
     }
+
 
     public function setOpcionesPersonalizadas(int $numPisos, array $rellenos): void
     {
@@ -61,12 +65,10 @@ class Tarta extends Dulce
         $this->rellenos = $rellenos;
     }
 
+
     public function getOpcionesPersonalizadas(): string
     {
         return "Número de pisos: {$this->numPisos}, Rellenos: " . implode(", ", $this->rellenos);
     }
-
-
-
 }
 ?>

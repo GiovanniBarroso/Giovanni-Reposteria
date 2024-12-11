@@ -1,17 +1,19 @@
 <?php
+
 session_start();
+require_once '../src/Pasteleria.php';
 
 if ($_SESSION['user'] !== 'admin') {
     header("Location: index.php?error=Acceso no autorizado");
     exit;
 }
 
-require_once '../src/Pasteleria.php';
 
 $pasteleria = new Pasteleria();
 $productos = $pasteleria->obtenerProductos();
 $clientes = $pasteleria->obtenerClientes();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="es">
@@ -28,6 +30,7 @@ $clientes = $pasteleria->obtenerClientes();
 </head>
 
 <body class="bg-light">
+
     <!-- Navegación fija -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
         <div class="container-fluid">
@@ -46,12 +49,14 @@ $clientes = $pasteleria->obtenerClientes();
         </div>
     </nav>
 
+
     <div class="container mt-4">
         <!-- Sección de bienvenida -->
         <div class="welcome-admin bg-primary text-white rounded shadow-lg p-4 text-center mb-5">
             <h1 class="display-6 fw-bold"><i class="bi bi-shield-lock"></i> Bienvenido, Administrador</h1>
             <p class="lead">Gestione productos y clientes desde un solo lugar.</p>
         </div>
+
 
         <!-- Botón para agregar productos -->
         <div class="row mb-4">
@@ -62,9 +67,11 @@ $clientes = $pasteleria->obtenerClientes();
             </div>
         </div>
 
+
         <!-- Listado de Productos -->
         <div class="row">
             <h2 class="text-primary text-center mb-3"><i class="bi bi-box-seam"></i> Productos</h2>
+
             <?php foreach ($productos as $producto): ?>
                 <?php
                 $imagen = "../img/{$producto->getId()}.jpg";
@@ -72,6 +79,7 @@ $clientes = $pasteleria->obtenerClientes();
                     $imagen = "foto1.jpg"; // Imagen por defecto
                 }
                 ?>
+
                 <div class="col-md-4 col-sm-6 mb-4 d-flex align-items-stretch">
                     <div class="card2 h-100 shadow-sm border-0 rounded">
                         <img src="<?= $imagen ?>" class="card-img-top product-image2 rounded-top"
@@ -92,7 +100,9 @@ $clientes = $pasteleria->obtenerClientes();
                     </div>
                 </div>
             <?php endforeach; ?>
+
         </div>
+
 
         <!-- Listado de Clientes -->
         <div class="row mt-5">
@@ -110,6 +120,7 @@ $clientes = $pasteleria->obtenerClientes();
                             </tr>
                         </thead>
                         <tbody>
+
                             <?php foreach ($clientes as $cliente): ?>
                                 <tr>
                                     <td><?= htmlspecialchars($cliente['id']) ?></td>
@@ -127,15 +138,14 @@ $clientes = $pasteleria->obtenerClientes();
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
+
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
+
     </div>
-
-
-
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>

@@ -43,6 +43,7 @@ class Pedido
         return $this->fecha->format('Y-m-d H:i:s');
     }
 
+
     public function agregarDulce(Dulce $dulce, int $cantidad): void
     {
         $dulceId = $dulce->getId();
@@ -54,6 +55,7 @@ class Pedido
         $this->total = $this->calcularTotal();
     }
 
+
     private function calcularTotal(): float
     {
         $total = 0;
@@ -62,6 +64,7 @@ class Pedido
         }
         return $total;
     }
+
 
     public function muestraResumen(): string
     {

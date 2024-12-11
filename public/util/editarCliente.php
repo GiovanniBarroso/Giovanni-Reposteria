@@ -1,7 +1,9 @@
 <?php
+
 require_once '../src/Pasteleria.php';
 
 $pasteleria = new Pasteleria();
+
 
 // Verificar si el formulario fue enviado
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -20,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     exit;
 } else {
+
     // Obtener los datos del cliente para mostrar en el formulario
     if (isset($_GET['id'])) {
         $id = $_GET['id'];
@@ -35,6 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="es">

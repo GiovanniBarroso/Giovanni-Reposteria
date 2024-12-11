@@ -1,6 +1,8 @@
 <?php
+
 require_once __DIR__ . '/../src/Pasteleria.php';
 session_start();
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username'] ?? '');
@@ -31,10 +33,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['error'] = "Credenciales inválidas.";
             header("Location: index.php");
         }
+
     } catch (Exception $e) {
         $_SESSION['error'] = "Error al iniciar sesión: " . $e->getMessage();
         header("Location: index.php");
     }
     exit;
 }
+
 ?>

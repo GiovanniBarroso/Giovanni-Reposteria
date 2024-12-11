@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 require_once '../src/Pasteleria.php';
 
@@ -13,6 +14,7 @@ $valoracion = trim($_POST['valoracion']);
 $puntuacion = intval($_POST['puntuacion']);
 
 $pasteleria = new Pasteleria();
+
 
 if ($pasteleria->puedeValorar($clienteId, $productoId)) {
     if ($pasteleria->guardarValoracion($productoId, $clienteId, $valoracion, $puntuacion)) {

@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const cartDropdown = document.getElementById("cartDropdown");
     const cartCount = document.getElementById("cartCount");
 
+
     // Actualizar el carrito en el servidor
     const updateCart = async (action, productId = null) => {
         try {
@@ -34,13 +35,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
         setTimeout(() => {
             alertDiv.remove();
-        }, 1200); // Mostrar por 2 segundos
+        }, 1200);
     };
 
     // Renderizar el carrito en el menú desplegable
     const renderCart = (cart) => {
-        cartDropdown.innerHTML = ""; // Limpiar el contenido previo
+        cartDropdown.innerHTML = "";
         let total = 0;
+
 
         // Verificar si el carrito está vacío
         if (Object.keys(cart).length === 0) {
@@ -50,6 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 </li>`;
             return;
         }
+
 
         // Recorrer los elementos del carrito
         for (const [id, item] of Object.entries(cart)) {
@@ -79,6 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 </li>`;
         }
 
+
         // Añadir total y botones finales
         cartDropdown.innerHTML += `
             <li class="dropdown-item">
@@ -94,14 +98,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 <button class="btn btn-danger w-100 clear-cart">Limpiar Carrito</button>
             </li>`;
 
-        assignCartEventListeners(); // Reasignar eventos
+        assignCartEventListeners();
     };
+
 
     // Actualizar contador del carrito
     const updateCartCount = (cart) => {
         const itemCount = Object.values(cart).reduce((total, item) => total + item.quantity, 0);
         cartCount.textContent = itemCount; // Actualizar el número del contador
     };
+
 
     // Asignar eventos a los botones del carrito
     const assignCartEventListeners = () => {
@@ -113,6 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
 
+
         document.querySelectorAll(".remove-item").forEach((button) => {
             button.addEventListener("click", (event) => {
                 event.stopPropagation();
@@ -120,6 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 updateCart("remove", id);
             });
         });
+
 
         document.querySelectorAll(".delete-item").forEach((button) => {
             button.addEventListener("click", (event) => {
@@ -129,6 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
 
+
         const clearCartButton = document.querySelector(".clear-cart");
         if (clearCartButton) {
             clearCartButton.addEventListener("click", () => {
@@ -137,6 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
+
     // Inicializar eventos de productos en la página principal
     document.querySelectorAll(".add-to-cart").forEach((button) => {
         button.addEventListener("click", () => {
@@ -144,6 +154,7 @@ document.addEventListener("DOMContentLoaded", () => {
             updateCart("add", productId);
         });
     });
+
 
     // Cargar el carrito al hacer clic en el botón del navbar
     document.getElementById("navbarCart").addEventListener("click", async () => {
@@ -157,7 +168,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = await response.json();
             if (data.success) {
                 renderCart(data.cart);
-                updateCartCount(data.cart); // Actualiza el contador al abrir el carrito
+                updateCartCount(data.cart);
             } else {
                 console.error("Error al cargar el carrito:", data.error);
             }
