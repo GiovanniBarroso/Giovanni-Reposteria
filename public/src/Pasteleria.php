@@ -242,6 +242,63 @@ class Pasteleria
     }
 
 
+
+
+
+
+    public function puedeValorar(int $clienteId, int $productoId): bool
+    {
+        $db = Database::getConnection();
+        $query = "SELECT COUNT(*) FROM detalle_pedidos dp
+                  JOIN pedidos p ON dp.pedido_id = p.id
+                  WHERE dp.producto_id = :producto_id AND p.cliente_id = :cliente_id";
+        $stmt = $db->prepare($query);
+        $stmt->bindValue(':producto_id', $productoId, PDO::PARAM_INT);
+        $stmt->bindValue(':cliente_id', $clienteId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchColumn() > 0;
+    }
+
+    public function guardarValoracion(int $productoId, int $clienteId, string $valoracion, int $puntuacion): bool
+    {
+        $db = Database::getConnection();
+        $query = "INSERT INTO valoraciones (producto_id, cliente_id, valoracion, puntuacion) VALUES (:producto_id, :cliente_id, :valoracion, :puntuacion)";
+        $stmt = $db->prepare($query);
+        $stmt->bindValue(':producto_id', $productoId, PDO::PARAM_INT);
+        $stmt->bindValue(':cliente_id', $clienteId, PDO::PARAM_INT);
+        $stmt->bindValue(':valoracion', $valoracion);
+        $stmt->bindValue(':puntuacion', $puntuacion, PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    public function obtenerValoraciones(int $productoId): array
+    {
+        $db = Database::getConnection();
+        $query = "SELECT v.valoracion, v.puntuacion, c.nombre, v.fecha 
+                  FROM valoraciones v
+                  JOIN clientes c ON v.cliente_id = c.id
+                  WHERE v.producto_id = :producto_id
+                  ORDER BY v.fecha DESC";
+        $stmt = $db->prepare($query);
+        $stmt->bindValue(':producto_id', $productoId, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public function actualizarProducto(int $id, Dulce $d): bool
     {
         $db = Database::getConnection();

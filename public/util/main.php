@@ -127,11 +127,47 @@ $productos = $pasteleria->obtenerProductos();
                             <button class="btn btn-success mt-auto w-100 add-to-cart" data-id="<?= $producto->getId() ?>">
                                 <i class="bi bi-cart-plus"></i> Agregar al Carrito
                             </button>
+
+                            <!-- Formulario de valoración -->
+                            <?php if ($pasteleria->puedeValorar($clienteId, $producto->getId())): ?>
+                                <form method="post" action="valorarProducto.php" class="mt-3">
+                                    <input type="hidden" name="producto_id" value="<?= $producto->getId() ?>">
+                                    <div class="mb-2">
+                                        <label for="puntuacion-<?= $producto->getId() ?>" class="form-label">Puntuación:</label>
+                                        <select name="puntuacion" id="puntuacion-<?= $producto->getId() ?>" class="form-select"
+                                            required>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                        </select>
+                                    </div>
+                                    <textarea name="valoracion" class="form-control mb-2" rows="2"
+                                        placeholder="Escribe tu valoración"></textarea>
+                                    <button type="submit" class="btn btn-primary btn-sm w-100">Enviar valoración</button>
+                                </form>
+                            <?php else: ?>
+                                <p class="text-muted mt-3">Compra este producto para poder valorarlo.</p>
+                            <?php endif; ?>
+
+                            <!-- Mostrar valoraciones -->
+                            <hr>
+                            <h6>Valoraciones:</h6>
+                            <ul class="list-unstyled">
+                                <?php foreach ($pasteleria->obtenerValoraciones($producto->getId()) as $valoracion): ?>
+                                    <li>
+                                        <strong><?= htmlspecialchars($valoracion['nombre']) ?></strong>
+                                        (<?= htmlspecialchars($valoracion['puntuacion']) ?>/5) <i class="bi bi-cookie"></i> :
+                                        <?= htmlspecialchars($valoracion['valoracion']) ?>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
                         </div>
                     </div>
                 </div>
-
             <?php endforeach; ?>
+
         </div>
     </div>
 

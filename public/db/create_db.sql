@@ -61,6 +61,18 @@ CREATE TABLE detalles_tarta (
     FOREIGN KEY (producto_id) REFERENCES productos(id)
 );
 
+CREATE TABLE IF NOT EXISTS valoraciones (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    producto_id INT NOT NULL,
+    cliente_id INT NOT NULL,
+    valoracion TEXT NOT NULL,
+    puntuacion INT NOT NULL CHECK (puntuacion BETWEEN 1 AND 5),
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (producto_id) REFERENCES productos(id),
+    FOREIGN KEY (cliente_id) REFERENCES clientes(id)
+);
+
+
 
 INSERT INTO productos (nombre, precio, categoria, tipo, descripcion, porcentajeCacao, peso, rellenos, numPisos, minComensales, maxComensales) VALUES
 ('Croissant', 2.50, 'Bollo', 'Bollo', 'Un bollo clásico de mantequilla', NULL, NULL, NULL, NULL, NULL, NULL),
