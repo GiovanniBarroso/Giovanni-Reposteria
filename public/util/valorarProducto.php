@@ -17,9 +17,12 @@ $pasteleria = new Pasteleria();
 if ($pasteleria->puedeValorar($clienteId, $productoId)) {
     if ($pasteleria->guardarValoracion($productoId, $clienteId, $valoracion, $puntuacion)) {
         header("Location: main.php?success=Valoración enviada correctamente");
+        exit;
     } else {
         header("Location: main.php?error=Error al enviar la valoración");
+        exit;
     }
 } else {
     header("Location: main.php?error=No puedes valorar este producto");
+    exit;
 }

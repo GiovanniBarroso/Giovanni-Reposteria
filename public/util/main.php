@@ -25,21 +25,23 @@ try {
 } catch (PDOException $e) {
     $pedidosRecientes = [];
 }
+?>
+<?php
+if (isset($_GET['success'])) {
+    echo "<div class='alert alert-success text-center'>" . htmlspecialchars($_GET['success']) . "</div>";
+    header("Refresh: 1.2; URL=main.php"); // Redirigir después de 3 segundos
+}
+if (isset($_GET['error'])) {
+    echo "<div class='alert alert-danger text-center'>" . htmlspecialchars($_GET['error']) . "</div>";
+    header("Refresh: 1.2; URL=main.php"); // Redirigir después de 3 segundos
+}
 
-if (isset($_GET['success'])): ?>
-    <div class="alert alert-success text-center">
-        <?= htmlspecialchars($_GET['success']) ?>
-    </div>
-<?php elseif (isset($_GET['error'])): ?>
-    <div class="alert alert-danger text-center">
-        <?= htmlspecialchars($_GET['error']) ?>
-    </div>
-<?php endif;
+
 
 $pasteleria = new Pasteleria();
 $productos = $pasteleria->obtenerProductos();
-
 ?>
+
 
 <!DOCTYPE html>
 <html lang="es">
@@ -144,8 +146,8 @@ $productos = $pasteleria->obtenerProductos();
                                         </select>
                                     </div>
                                     <textarea name="valoracion" class="form-control mb-2" rows="2"
-                                        placeholder="Escribe tu valoración"></textarea>
-                                    <button type="submit" class="btn btn-primary btn-sm w-100">Enviar valoración</button>
+                                        placeholder="Escribe tu valoración" required></textarea>
+                                    <button type="submit" class="btn btn-secondary btn-sm w-100">Enviar valoración</button>
                                 </form>
                             <?php else: ?>
                                 <p class="text-muted mt-3">Compra este producto para poder valorarlo.</p>
