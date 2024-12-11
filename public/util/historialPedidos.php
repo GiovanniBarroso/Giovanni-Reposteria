@@ -109,38 +109,73 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Historial de Pedidos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles.css">
 </head>
 
 <body class="bg-light">
-    <div class="container mt-4">
-        <h1 class="text-center mb-4">Historial de Pedidos</h1>
+    <div class="container mt-5">
+        <div class="text-center mb-5">
+            <h1 class="display-4">Historial de Pedidos</h1>
+            <p class="text-muted">Consulta tus pedidos realizados y sus detalles</p>
+        </div>
+
         <?php if (!empty($pedidos)): ?>
-            <?php foreach ($pedidos as $pedido): ?>
-                <div class="card mb-3">
-                    <div class="card-header">
-                        Pedido #<?= $pedido->getId() ?> - Fecha: <?= $pedido->getFecha() ?> - Total:
-                        <?= number_format($pedido->getTotal(), 2) ?>€
+            <div class="accordion" id="pedidosAccordion">
+                <?php foreach ($pedidos as $pedido): ?>
+                    <div class="accordion-item shadow-sm">
+                        <h2 class="accordion-header" id="heading-<?= $pedido->getId() ?>">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapse-<?= $pedido->getId() ?>" aria-expanded="false"
+                                aria-controls="collapse-<?= $pedido->getId() ?>">
+                                <strong>Pedido #<?= $pedido->getId() ?></strong> - Fecha: <?= $pedido->getFecha() ?> - Total:
+                                <span class="text-success"><?= number_format($pedido->getTotal(), 2) ?>€</span>
+                            </button>
+                        </h2>
+                        <div id="collapse-<?= $pedido->getId() ?>" class="accordion-collapse collapse"
+                            aria-labelledby="heading-<?= $pedido->getId() ?>" data-bs-parent="#pedidosAccordion">
+                            <div class="accordion-body">
+                                <table class="table table-bordered table-striped text-center">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Producto</th>
+                                            <th>Cantidad</th>
+                                            <th>Precio Unitario</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($pedido->getDulces() as $dulceId => $dulceData): ?>
+                                            <tr>
+                                                <td class="fw-bold"><?= htmlspecialchars($dulceData['dulce']->getNombre()) ?></td>
+                                                <td><?= $dulceData['cantidad'] ?></td>
+                                                <td><?= number_format($dulceData['dulce']->getPrecio(), 2) ?>€</td>
+                                                <td class="text-danger fw-bold">
+                                                    <?= number_format($dulceData['cantidad'] * $dulceData['dulce']->getPrecio(), 2) ?>€
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <ul>
-                            <?php foreach ($pedido->getDulces() as $dulceId => $dulceData): ?>
-                                <li>
-                                    <?= $dulceData['dulce']->getNombre() ?> -
-                                    Cantidad: <?= $dulceData['cantidad'] ?> -
-                                    Precio Unitario: <?= number_format($dulceData['dulce']->getPrecio(), 2) ?>€
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
-                    </div>
-                </div>
-            <?php endforeach; ?>
+                <?php endforeach; ?>
+            </div>
         <?php else: ?>
-            <p class="text-center">No se han realizado pedidos aún.</p>
+            <div class="alert alert-info text-center">
+                <i class="bi bi-info-circle"></i> No se han realizado pedidos aún.
+            </div>
         <?php endif; ?>
+
         <div class="text-center mt-4">
-            <a href="main.php" class="btn btn-secondary">Volver</a>
+            <a href="main.php" class="btn btn-secondary btn-lg">
+                <i class="bi bi-arrow-left"></i> Volver
+            </a>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
