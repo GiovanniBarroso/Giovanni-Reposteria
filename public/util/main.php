@@ -57,24 +57,28 @@ $productos = $pasteleria->obtenerProductos();
 
 <body class="bg-light">
 
-    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#"><i class="bi bi-cupcake"></i> Pastelería</a>
+            <a class="navbar-brand" href="#"><i class="bi bi-cookie"></i> Pastelería</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
+
+                    <!-- Perfil -->
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">Inicio</a>
+                        <a class="nav-link" href="editarPerfil.php"><i class="bi bi-person"></i> Perfil</a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="historialPedidos.php">Historial</a>
                     </li>
+
                 </ul>
                 <ul class="navbar-nav">
+
                     <!-- Modo Oscuro -->
                     <li class="nav-item me-2">
                         <button id="toggle-dark-mode" class="btn btn-sm btn-outline-light">Modo Oscuro</button>
@@ -98,6 +102,7 @@ $productos = $pasteleria->obtenerProductos();
         </div>
     </nav>
 
+
     <!-- Contenido Principal -->
     <div class="container mt-4">
         <!-- Sección de bienvenida -->
@@ -111,21 +116,21 @@ $productos = $pasteleria->obtenerProductos();
             <h2 class="products-title mb-4"><i class="bi bi-bag"></i> Productos Disponibles</h2>
 
             <?php foreach ($productos as $producto): ?>
-                <div class="col-md-4 mb-4">
+                <div class="col-md-4 col-sm-6 mb-4 d-flex align-items-stretch">
                     <div class="card product-card">
-                        <img src="../img/<?= $producto->getId() ?>.jpg" class="card-img-top"
+                        <img src="../img/<?= $producto->getId() ?>.jpg" class="card-img-top img-fluid product-image"
                             alt="<?= htmlspecialchars($producto->getNombre()) ?>">
-                        <div class="card-body">
+                        <div class="card-body d-flex flex-column">
                             <h5 class="card-title"><?= htmlspecialchars($producto->getNombre()) ?></h5>
                             <p class="card-text">Categoría: <?= htmlspecialchars($producto->getCategoria()) ?></p>
                             <p class="card-text fw-bold">Precio: <?= number_format($producto->getPrecio(), 2) ?>€</p>
-                            <button class="btn btn-success w-100 add-to-cart" data-id="<?= $producto->getId() ?>">
+                            <button class="btn btn-success mt-auto w-100 add-to-cart" data-id="<?= $producto->getId() ?>">
                                 <i class="bi bi-cart-plus"></i> Agregar al Carrito
                             </button>
                         </div>
-
                     </div>
                 </div>
+
             <?php endforeach; ?>
         </div>
     </div>

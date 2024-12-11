@@ -127,3 +127,141 @@ button.btn-outline-light:hover {
     background-color: #ffffff;
     color: #000000;
 }
+
+
+/* Ajustar tamaño de imágenes */
+.product-image {
+    object-fit: cover;
+    /* Asegura que las imágenes se ajusten sin deformarse */
+    width: 100vw;
+    height: 100%;
+    border-bottom: 10px solid #ddd;
+}
+
+
+/* Responsive Layout */
+@media (max-width: 768px) {
+    .product-image {
+        height: 150px;
+        /* Tamaño ajustado para pantallas más pequeñas */
+    }
+}
+
+/* Tarjetas de Productos */
+.product-card {
+    background-color: var(--light-bg);
+    border: 1px solid var(--border-color-light);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+body.dark-mode .product-card {
+    background-color: var(--dark-bg);
+    border: 1px solid var(--border-color-dark);
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+body.dark-mode .product-image {
+    border-bottom: 1px solid var(--border-color-dark);
+}
+
+
+
+
+
+
+
+/* MAIN ADMIN */
+
+:root {
+    --primary-color: #007bff;
+    --dark-bg: #1c1c1c;
+    --light-bg: #ffffff;
+    --text-color-light: #212529;
+    --text-color-dark: #e0e0e0;
+    --border-color-light: #ddd;
+    --border-color-dark: #444;
+}
+
+/* Navbar */
+.navbar-brand img {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+    object-fit: cover;
+}
+
+.navbar {
+    background-color: var(--primary-color);
+    transition: background-color 0.3s ease;
+}
+
+body.dark-mode .navbar {
+    background-color: var(--dark-bg);
+}
+
+/* Sección de bienvenida */
+.welcome-admin {
+    background: var(--primary-color);
+    color: var(--light-bg);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 2rem;
+}
+
+body.dark-mode .welcome-admin {
+    background: var(--dark-bg);
+    color: var(--text-color-dark);
+}
+
+/* Tarjetas */
+.card2 {
+    border: 1px solid var(--border-color-light);
+    transition: transform 0.3s, box-shadow 0.3s;
+    border-radius: 10px;
+}
+
+.card2:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+body.dark-mode .card2 {
+    background-color: var(--dark-bg);
+    border: 1px solid var(--border-color-dark);
+    color: var(--text-color-dark);
+}
+
+/* Imagen en tarjetas */
+.product-image2 {
+    object-fit: cover;
+    height: 200px;
+    border-radius: 10px 10px 0 0;
+}
+
+body.dark-mode .product-image2 {
+    border-bottom: 1px solid var(--border-color-dark);
+}
+
+/* Botones */
+.btn-info:hover {
+    background-color: #117a8b;
+    border-color: #117a8b;
+}
+
+.btn-danger:hover {
+    background-color: #bd2130;
+}
+
+/* Tablas */
+.table-responsive {
+    overflow-x: auto;
+}
+
+body.dark-mode .table {
+    background-color: var(--dark-bg);
+    color: var(--text-color-dark);
+}

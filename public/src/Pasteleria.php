@@ -210,17 +210,36 @@ class Pasteleria
     public function buscarClientePorId(int $id): ?array
     {
         $db = Database::getConnection();
-        $query = "SELECT id, nombre, usuario, rol FROM clientes WHERE id = :id";
+        $query = "SELECT id, nombre, usuario, rol, password FROM clientes WHERE id = :id";
         $stmt = $db->prepare($query);
 
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
 
         $cliente = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $cliente ? $cliente : null;
+        return $cliente ?: null;
     }
 
 
+
+    public function actualizarClienteConPassword(int $id, string $nombre, string $usuario, string $password): bool
+    {
+        try {
+            $db = Database::getConnection();
+            $query = "UPDATE clientes SET nombre = :nombre, usuario = :usuario, password = :password WHERE id = :id";
+            $stmt = $db->prepare($query);
+
+            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+            $stmt->bindValue(':nombre', $nombre);
+            $stmt->bindValue(':usuario', $usuario);
+            $stmt->bindValue(':password', $password);
+
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log("Error al actualizar cliente: " . $e->getMessage());
+            return false;
+        }
+    }
 
 
     public function actualizarProducto(int $id, Dulce $d): bool
@@ -281,14 +300,47 @@ class Pasteleria
 
 
 
-    public function eliminarProducto(int $id): bool
+    public function eliminarProducto($id)
     {
-        $db = Database::getConnection();
-        $query = "DELETE FROM productos WHERE id = :id";
-        $stmt = $db->prepare($query);
-        $stmt->bindValue(':id', $id);
-        return $stmt->execute();
+        try {
+            $db = Database::getConnection();
+
+            // Iniciar una transacción
+            $db->beginTransaction();
+
+            // Eliminar registros relacionados en detalles_tarta
+            $stmtDetallesTarta = $db->prepare("DELETE FROM detalles_tarta WHERE producto_id = :id");
+            $stmtDetallesTarta->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmtDetallesTarta->execute();
+
+            // Eliminar registros relacionados en detalle_pedidos
+            $stmtDetalle = $db->prepare("DELETE FROM detalle_pedidos WHERE producto_id = :id");
+            $stmtDetalle->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmtDetalle->execute();
+
+            // Luego eliminar el producto
+            $stmtProducto = $db->prepare("DELETE FROM productos WHERE id = :id");
+            $stmtProducto->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmtProducto->execute();
+
+            // Confirmar la transacción
+            $db->commit();
+
+            return true;
+        } catch (PDOException $e) {
+            // Revertir la transacción en caso de error
+            if ($db->inTransaction()) {
+                $db->rollBack();
+            }
+
+            // Registrar el error en el log
+            error_log("Error al eliminar producto: " . $e->getMessage());
+
+            // Retornar el mensaje al usuario
+            return "Error al eliminar el producto: " . $e->getMessage();
+        }
     }
+
 
     public function buscarProductoPorId(int $id): ?Dulce
     {

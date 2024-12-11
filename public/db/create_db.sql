@@ -74,6 +74,3 @@ INSERT INTO productos (nombre, precio, categoria, tipo, descripcion, porcentajeC
 SELECT * FROM clientes;
 SELECT * FROM productos;
 SELECT * FROM pedidos;
-
-
-

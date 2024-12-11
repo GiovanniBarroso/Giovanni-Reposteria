@@ -16,9 +16,10 @@ if (!isset($_GET['id'])) {
 $id = intval($_GET['id']);
 $pasteleria = new Pasteleria();
 
-if ($pasteleria->eliminarProducto($id)) {
+
+if ($pasteleria->eliminarProducto($id) === true) {
     header("Location: mainAdmin.php?success=Producto eliminado correctamente");
 } else {
-    header("Location: mainAdmin.php?error=No se pudo eliminar el producto");
+    header("Location: mainAdmin.php?error=No se pudo eliminar el producto porque está relacionado con otros registros.");
 }
-?>
+exit;
