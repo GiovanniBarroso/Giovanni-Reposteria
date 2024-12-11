@@ -138,11 +138,11 @@ $productos = $pasteleria->obtenerProductos();
                                         <label for="puntuacion-<?= $producto->getId() ?>" class="form-label">Puntuación:</label>
                                         <select name="puntuacion" id="puntuacion-<?= $producto->getId() ?>" class="form-select"
                                             required>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
+                                            <option value="1">1 ⭐</option>
+                                            <option value="2">2 ⭐⭐</option>
+                                            <option value="3">3 ⭐⭐⭐</option>
+                                            <option value="4">4 ⭐⭐⭐⭐</option>
+                                            <option value="5">5 ⭐⭐⭐⭐⭐</option>
                                         </select>
                                     </div>
                                     <textarea name="valoracion" class="form-control mb-2" rows="2"
@@ -160,7 +160,7 @@ $productos = $pasteleria->obtenerProductos();
                                 <?php foreach ($pasteleria->obtenerValoraciones($producto->getId()) as $valoracion): ?>
                                     <li>
                                         <strong><?= htmlspecialchars($valoracion['nombre']) ?></strong>
-                                        (<?= htmlspecialchars($valoracion['puntuacion']) ?>/5) <i class="bi bi-cookie"></i> :
+                                        (<?= htmlspecialchars($valoracion['puntuacion']) ?>/5) ⭐</i> :
                                         <?= htmlspecialchars($valoracion['valoracion']) ?>
                                     </li>
                                 <?php endforeach; ?>

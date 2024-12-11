@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../db/Database.php';
+require_once '../src/Pasteleria.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombre = trim($_POST['nombre']);
@@ -8,34 +8,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = trim($_POST['password']);
     $rol = (isset($_SESSION['rol']) && $_SESSION['rol'] === 'admin' && isset($_POST['rol'])) ? $_POST['rol'] : 'cliente';
 
-    // Validar que no haya campos vacíos
     if (empty($nombre) || empty($usuario) || empty($password)) {
-        header('Location: registro.php?error=Todos los campos son obligatorios');
+        $_SESSION['error'] = 'Todos los campos son obligatorios.';
+        header('Location: registro.php');
         exit;
     }
 
     try {
-        $db = Database::getConnection();
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-        $query = "INSERT INTO clientes (nombre, usuario, password, rol) VALUES (:nombre, :usuario, :password, :rol)";
-        $stmt = $db->prepare($query);
-        $stmt->bindValue(':nombre', $nombre);
-        $stmt->bindValue(':usuario', $usuario);
-        $stmt->bindValue(':password', $hashedPassword);
-        $stmt->bindValue(':rol', $rol);
-
-        $stmt->execute();
-
-        header('Location: login.php?success=Usuario registrado correctamente');
-        exit;
-    } catch (PDOException $e) {
-        // Redirigir con un mensaje de error específico
-        header('Location: registro.php?error=Error al registrar usuario: ' . $e->getMessage());
-        exit;
+        $pasteleria = new Pasteleria();
+        $pasteleria->registrarUsuario($nombre, $usuario, $password, $rol);
+        $_SESSION['success'] = 'Usuario registrado correctamente.';
+        header('Location: index.php');
+    } catch (Exception $e) {
+        $_SESSION['error'] = $e->getMessage();
+        header('Location: registro.php');
     }
+    exit;
 }
 ?>
+
 
 
 <!DOCTYPE html>
@@ -79,11 +70,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
 
                     <!-- Contraseña -->
-                    <div class="mb-3">
+                    <div class="mb-3 position-relative">
                         <label for="password" class="form-label">Contraseña</label>
-                        <input type="password" class="form-control" id="password" name="password"
-                            placeholder="Introduce una contraseña segura" required>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="password" name="password"
+                                placeholder="Introduce una contraseña segura" required>
+                            <button type="button" class="btn btn-outline-secondary" id="togglePassword">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
                     </div>
+
 
                     <!-- Botón de registro -->
                     <div class="d-grid">
@@ -102,6 +99,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const passwordInput = document.getElementById("password");
+            const togglePasswordButton = document.getElementById("togglePassword");
+
+            togglePasswordButton.addEventListener("click", () => {
+                const isPassword = passwordInput.type === "password";
+                passwordInput.type = isPassword ? "text" : "password";
+                togglePasswordButton.innerHTML = isPassword ? '<i class="bi bi-eye-slash"></i>' : '<i class="bi bi-eye"></i>';
+            });
+        });
+    </script>
+
 </body>
 
 </html>

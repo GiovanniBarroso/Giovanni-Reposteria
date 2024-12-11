@@ -12,11 +12,13 @@ class Pasteleria
 {
     private array $productos;
     private array $clientes;
+    private $db;
 
     public function __construct()
     {
         $this->productos = [];
         $this->clientes = [];
+        $this->db = Database::getConnection();
     }
 
     public function incluirProducto(Dulce $d): void
@@ -62,6 +64,47 @@ class Pasteleria
             return null;
         }
     }
+
+
+    public function registrarUsuario($nombre, $usuario, $password, $rol = 'cliente')
+    {
+        try {
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+            $query = "INSERT INTO clientes (nombre, usuario, password, rol) VALUES (:nombre, :usuario, :password, :rol)";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindValue(':nombre', $nombre);
+            $stmt->bindValue(':usuario', $usuario);
+            $stmt->bindValue(':password', $hashedPassword);
+            $stmt->bindValue(':rol', $rol);
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            throw new Exception("Error al registrar usuario: " . $e->getMessage());
+        }
+    }
+
+
+    public function buscarUsuarioPorNombre($usuario)
+    {
+        $query = "SELECT * FROM clientes WHERE usuario = :usuario";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':usuario', $usuario);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+
+
+    public function validarCredenciales($usuario, $password)
+    {
+        $user = $this->buscarUsuarioPorNombre($usuario);
+        if ($user && password_verify($password, $user['password'])) {
+            return $user; // Devuelve los datos del usuario si son válidos
+        }
+        return null; // Credenciales no válidas
+    }
+
+
+
 
     public function guardarProducto(Dulce $d): bool
     {
