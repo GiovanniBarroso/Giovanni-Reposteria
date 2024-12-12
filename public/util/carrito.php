@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 require_once '../src/Dulce.php';
 require_once '../db/Database.php';
 

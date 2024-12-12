@@ -71,6 +71,7 @@ $clientes = $pasteleria->obtenerClientes();
                 </a>
             </div>
         </div>
+        
         <!-- Botón para agregar productos -->
         <div class="row mb-4">
             <div class="col-12 d-flex justify-content-center justify-content-md-end">
