@@ -190,6 +190,24 @@ class Pasteleria
 
     /* VALORACIONES */
 
+    public function eliminarTodasValoraciones(): bool
+    {
+        try {
+            $db = Database::getConnection();
+
+            // Eliminar todas las valoraciones
+            $stmt = $db->prepare("DELETE FROM valoraciones");
+            $stmt->execute();
+
+            return true;
+        } catch (PDOException $e) {
+            // Registrar el error en un log
+            error_log("Error al eliminar valoraciones: " . $e->getMessage());
+            return false;
+        }
+    }
+
+
 
     public function puedeValorar(int $clienteId, int $productoId): bool
     {
