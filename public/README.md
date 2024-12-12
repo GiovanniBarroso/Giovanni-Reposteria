@@ -60,7 +60,7 @@ Instalación
 
 Clona este repositorio:
 
-git clone https://github.com/tu-usuario/pasteleria-online.git
+git clone https://github.com/GiovanniBarroso/Giovanni-Reposteria
 
 Configura el entorno local:
 
@@ -80,7 +80,7 @@ Asegúrate de que Apache y MySQL estén activos.
 
 Accede a la aplicación desde el navegador:
 
-http://localhost/pasteleria-online/public
+http://localhost/pastelería/public/util/index.php
 
 Estructura del Proyecto
 
@@ -143,4 +143,3 @@ Licencia
 Este proyecto está bajo la licencia MIT. Consulta el archivo LICENSE para más información.
 
 Desarrollado por Giovanni Barroso Álvarez.
-

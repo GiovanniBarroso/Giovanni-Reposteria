@@ -108,9 +108,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <button type="submit" class="btn btn-primary w-100 me-2">Guardar Cambios</button>
                     <a href="main.php" class="btn btn-secondary w-100">Cancelar</a>
                 </div>
+
+
             </form>
+            <!-- Botón de eliminar cuenta -->
+            <div class="mt-4">
+                <button class="btn btn-danger w-100" onclick="confirmarEliminacion()">Eliminar cuenta</button>
+            </div>
         </div>
     </div>
 </body>
+<script>
+    function confirmarEliminacion() {
+        if (confirm("¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.")) {
+            window.location.href = "eliminarClienteUser.php";
+        }
+    }
+</script>
 
 </html>
