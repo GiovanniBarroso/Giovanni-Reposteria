@@ -39,6 +39,7 @@ if (!$producto) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <!-- Custom Styles -->
     <link rel="stylesheet" href="../css/styles2.css">
+    <link rel="icon" href="../img/favicon.ico" type="image/x-icon">
 
 </head>
 

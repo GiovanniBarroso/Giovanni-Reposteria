@@ -21,12 +21,14 @@ $clientes = $pasteleria->obtenerClientes();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administrador - Pastelería</title>
+    <title>Admin - Pastelería</title>
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <!-- Custom Styles -->
     <link rel="stylesheet" href="../css/styles.css">
+    <link rel="icon" href="../img/favicon.ico" type="image/x-icon">
+
 </head>
 
 <body class="bg-light">
@@ -58,14 +60,26 @@ $clientes = $pasteleria->obtenerClientes();
         </div>
 
 
+
+
+        <!-- Botón para eliminar valoraciones -->
+        <div class="row mt-4">
+            <div class="col-12 d-flex justify-content-center mb-5">
+                <a href="eliminarValoraciones.php" class="btn btn-danger btn-lg shadow-sm w-100 w-md-auto text-center"
+                    onclick="return confirm('¿Estás seguro de que deseas eliminar todas las valoraciones? Esta acción no se puede deshacer.');">
+                    <i class="bi bi-trash"></i> Eliminar todas las valoraciones de los usuarios
+                </a>
+            </div>
+        </div>
         <!-- Botón para agregar productos -->
         <div class="row mb-4">
-            <div class="col-md-12 text-end">
-                <a href="agregarProducto.php" class="btn btn-success btn-lg shadow-sm">
+            <div class="col-12 d-flex justify-content-center justify-content-md-end">
+                <a href="agregarProducto.php" class="btn btn-success btn-lg shadow-sm w-100 w-md-auto text-center">
                     <i class="bi bi-plus-circle"></i> Añadir Producto
                 </a>
             </div>
         </div>
+
 
 
         <!-- Listado de Productos -->
