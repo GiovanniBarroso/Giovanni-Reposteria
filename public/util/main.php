@@ -187,11 +187,37 @@ if (isset($_GET['error'])) {
         </div>
     </div>
 
+    <!-- Modal de Política de Privacidad -->
+    <div class="modal fade" id="privacyPolicyModal" tabindex="-1" aria-labelledby="privacyPolicyLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="privacyPolicyLabel">Política de Privacidad</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        En nuestra pastelería respetamos su privacidad. Toda la información proporcionada será utilizada
+                        exclusivamente para procesar sus pedidos y mejorar su experiencia. No compartimos su información
+                        con terceros.
+                        Puede contactarnos para más información o para ejercer sus derechos según lo dispuesto por la
+                        ley.
+                    </p>
+                    <p>Para cualquier consulta, contáctenos a través de <strong>privacidad@pasteleria.com</strong>.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
-    <!-- Pie de Página -->
     <footer class="footer text-center">
-        <p>© 2024 Pastelería. Todos los derechos reservados. <a href="#">Política de Privacidad</a></p>
+        <p>© 2024 Pastelería. Todos los derechos reservados.
+            <a href="#" data-bs-toggle="modal" data-bs-target="#privacyPolicyModal">Política de Privacidad</a>
+        </p>
     </footer>
 
 

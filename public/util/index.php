@@ -8,6 +8,12 @@ $error = $_SESSION['error'] ?? null;
 unset($_SESSION['success']);
 unset($_SESSION['error']);
 $last_user = $_COOKIE['last_user'] ?? '';
+
+if (isset($_SESSION['error'])): ?>
+    <div class="alert alert-danger"><?= htmlspecialchars($_SESSION['error']) ?></div>
+    <?php unset($_SESSION['error']); ?>
+<?php endif;
+
 ?>
 
 
