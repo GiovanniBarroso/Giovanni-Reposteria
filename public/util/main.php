@@ -50,58 +50,64 @@ if (isset($_GET['error'])) {
 
 <body class="bg-light">
 
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#"><i class="bi bi-cookie"></i> Pastelería</a>
+    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
+    <div class="container">
+        <!-- Logo y nombre de la marca -->
+        <a class="navbar-brand d-flex align-items-center" href="#">
+            <i class="bi bi-cookie me-2 fs-3"></i>
+            <span class="fw-bold">Pastelería</span>
+        </a>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+        <!-- Botón del menú colapsable -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
+        <!-- Contenido del menú -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto align-items-center">
+                <!-- Perfil -->
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="editarPerfil.php"><i class="bi bi-person-circle"></i> Perfil</a>
+                </li>
+                <!-- Historial -->
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="historialPedidos.php"><i class="bi bi-clock-history"></i> Historial</a>
+                </li>
+            </ul>
 
-                    <!-- Perfil -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="editarPerfil.php"><i class="bi bi-person"></i> Perfil</a>
-                    </li>
+            <ul class="navbar-nav align-items-center">
+                <!-- Modo Oscuro -->
+                <li class="nav-item me-3">
+                    <button id="toggle-dark-mode" class="btn btn-outline-light btn-sm">
+                        <i class="bi bi-moon-stars"></i> Modo Oscuro
+                    </button>
+                </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="historialPedidos.php">Historial</a>
-                    </li>
+                <!-- Carrito -->
+                <li class="nav-item dropdown me-3">
+                    <a class="nav-link dropdown-toggle text-light d-flex align-items-center" href="#" id="navbarCart" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-cart me-1 fs-5"></i> 
+                        Carrito 
+                        <span id="cartCount" class="badge bg-warning ms-2">0</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end p-3" id="cartDropdown">
+                        <p class="text-muted">El carrito está vacío.</p>
+                    </ul>
+                </li>
 
-                </ul>
-
-
-                <ul class="navbar-nav">
-                    <!-- Modo Oscuro -->
-                    <li class="nav-item me-2">
-                        <button id="toggle-dark-mode" class="btn btn-sm btn-outline-light">Modo Oscuro</button>
-                    </li>
-
-
-                    <!-- Carrito -->
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarCart" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-cart"></i> Carrito <span id="cartCount" class="badge bg-warning">0</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end p-3" id="cartDropdown">
-                            <p class="text-muted">El carrito está vacío.</p>
-                        </ul>
-                    </li>
-
-
-                    <!-- Cerrar Sesión -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="logout.php"><i class="bi bi-box-arrow-left"></i> Cerrar sesión</a>
-                    </li>
-                </ul>
-
-            </div>
+                <!-- Cerrar Sesión -->
+                <li class="nav-item">
+                    <a class="btn btn-danger btn-sm d-flex align-items-center" href="logout.php">
+                        <i class="bi bi-box-arrow-right me-1"></i> Cerrar sesión
+                    </a>
+                </li>
+            </ul>
         </div>
-    </nav>
+    </div>
+</nav>
 
 
 

@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS productos (
     maxComensales INT NULL
 );
 
+
 CREATE TABLE IF NOT EXISTS clientes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
@@ -25,12 +26,14 @@ CREATE TABLE IF NOT EXISTS clientes (
     rol ENUM('cliente', 'admin') NOT NULL DEFAULT 'cliente'
 );
 
+
 CREATE TABLE IF NOT EXISTS pedidos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     cliente_id INT NOT NULL,
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (cliente_id) REFERENCES clientes(id)
 );
+
 
 CREATE TABLE IF NOT EXISTS detalle_pedidos (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -42,12 +45,14 @@ CREATE TABLE IF NOT EXISTS detalle_pedidos (
     FOREIGN KEY (producto_id) REFERENCES productos(id)
 );
 
+
 CREATE TABLE IF NOT EXISTS detalles_chocolate (
     producto_id INT PRIMARY KEY,
     porcentajeCacao DECIMAL(5, 2) NOT NULL,
     peso DECIMAL(10, 2) NOT NULL,
     FOREIGN KEY (producto_id) REFERENCES productos(id)
 );
+
 
 CREATE TABLE IF NOT EXISTS detalles_tarta (
     producto_id INT PRIMARY KEY,
@@ -57,6 +62,7 @@ CREATE TABLE IF NOT EXISTS detalles_tarta (
     maxComensales INT NOT NULL,
     FOREIGN KEY (producto_id) REFERENCES productos(id)
 );
+
 
 CREATE TABLE IF NOT EXISTS valoraciones (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -69,6 +75,7 @@ CREATE TABLE IF NOT EXISTS valoraciones (
     FOREIGN KEY (cliente_id) REFERENCES clientes(id)
 );
 
+
 -- Insertar usuarios iniciales
 INSERT INTO clientes (nombre, usuario, password, rol) VALUES
 ('Administrador', 'admin', '$2y$10$1UoqgiuqXdH10K1jjEzLjOWAFr9JYVs9WMPUTo0hZKB0XdiHDOZk2', 'admin'), -- CONTRASEÑA: admin
@@ -77,6 +84,7 @@ INSERT INTO clientes (nombre, usuario, password, rol) VALUES
 ('Daniel Rodriguez', 'daniel', '$2y$10$WukFofwK.InHWBPthNwTheu9Mut7VfFWU8N5zbwjY.hJlBm.PoYwm', 'cliente'), --  CONTRASEÑA daniel123
 ('Giovanni Barroso', 'giovanni', '$2y$10$Id3kuV9A6a1cXpYByRAMAO5mKuhNH7awypfW5nVxd9c.SyJvn/Xpu', 'cliente'); -- CONTRASEÑA giovanni123
 ; 
+
 
 -- Insertar productos iniciales
 INSERT INTO productos (nombre, precio, categoria, tipo, descripcion, porcentajeCacao, peso, rellenos, numPisos, minComensales, maxComensales) VALUES
@@ -98,23 +106,14 @@ INSERT INTO productos (nombre, precio, categoria, tipo, descripcion, porcentajeC
 
 -- Valoraciones por los 5 usuarios
 INSERT INTO valoraciones (producto_id, cliente_id, valoracion, puntuacion) VALUES
--- Usuario: Cristian Rodriguez Moreno
 (1, 3, 'El croissant estaba delicioso, fresco y bien hecho.', 5),
 (2, 3, 'El chocolate negro tiene un sabor intenso, pero un poco amargo para mi gusto.', 3),
-
--- Usuario: Daniel Rodriguez
 (3, 4, 'El brioche es muy esponjoso y delicioso. Ideal para desayunos.', 5),
 (8, 4, 'La tarta de fresa estaba increíblemente fresca y bien decorada.', 4),
-
--- Usuario: Giovanni Barroso
 (7, 5, 'La tarta de queso es excelente, pero un poco pesada para mi gusto.', 3),
 (9, 5, 'La selva negra fue una experiencia deliciosa, perfecta para compartir.', 5),
-
--- Usuario: Usuario (ya existente)
 (8, 2, 'La tarta de fresa es perfecta para celebraciones, me encantó.', 5),
 (2, 2, 'El chocolate negro es de excelente calidad, con un sabor muy puro.', 4),
-
--- Usuario: Administrador (ya existente)
 (3, 1, 'El brioche esponjoso y con un gran sabor, muy recomendado.', 4),
 (9, 1, 'La selva negra tiene una combinación de sabores excelente.', 5);
 
@@ -123,3 +122,4 @@ INSERT INTO valoraciones (producto_id, cliente_id, valoracion, puntuacion) VALUE
 SELECT * FROM clientes;
 SELECT * FROM productos;
 SELECT * FROM pedidos;
+SELECT * FROM valoraciones;
