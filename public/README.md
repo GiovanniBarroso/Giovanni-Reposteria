@@ -2,6 +2,8 @@ Proyecto: Pastelería Online
 
 Este proyecto es una aplicación web para gestionar una pastelería online. Incluye funcionalidades para administradores y clientes, permitiendo la gestión de productos, pedidos y usuarios.
 
+ENLACE A VIDEOS EN DRIVE: https://drive.google.com/drive/folders/1eX3wzGTzo9CtJOnGWJ8nMZ2zm6g6L5dV
+
 Tecnologías Utilizadas
 
 Frontend:

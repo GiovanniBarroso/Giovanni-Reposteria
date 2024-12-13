@@ -6,58 +6,50 @@ require_once '../src/Chocolate.php';
 
 $pasteleria = new Pasteleria();
 
-// Verificar si el formulario fue enviado
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nombre = $_POST['nombre'];
-    $precio = (float) $_POST['precio'];
-    $categoria = $_POST['categoria'];
+    $nombre = trim($_POST['nombre']);
+    $precio = max(1, (float) $_POST['precio']); // Mínimo 1
+    $categoria = trim($_POST['categoria']);
     $tipo = $_POST['tipo'];
-    $descripcion = $_POST['descripcion'] ?? '';
+    $descripcion = trim($_POST['descripcion'] ?? '');
 
+    try {
+        $producto = null;
 
-    // Crear un producto basado en el tipo
-    $producto = null;
+        switch ($tipo) {
+            case 'Bollo':
+                $relleno = trim($_POST['relleno'] ?? '');
+                $producto = new Bollo(null, $nombre, $precio, $descripcion, $categoria, $relleno);
+                break;
 
+            case 'Chocolate':
+                $porcentajeCacao = max(1, min(100, (float) ($_POST['porcentajeCacao'] ?? 0))); // Entre 1 y 100
+                $peso = max(1, (float) ($_POST['peso'] ?? 0)); // Mínimo 1
+                $producto = new Chocolate(null, $nombre, $precio, $descripcion, $categoria, $porcentajeCacao, $peso);
+                break;
 
-    // Crear un producto basado en el tipo
-    switch ($tipo) {
-        case 'Bollo':
-            $relleno = $_POST['relleno'] ?? '';
-            $producto = new Bollo(null, $nombre, $precio, $descripcion, $categoria, $relleno);
-            break;
+            case 'Tarta':
+                $rellenos = array_map('trim', explode(',', $_POST['rellenos'] ?? ''));
+                $numPisos = max(1, (int) ($_POST['numPisos'] ?? 1)); // Mínimo 1
+                $minComensales = max(1, (int) ($_POST['minComensales'] ?? 2));
+                $maxComensales = max($minComensales, (int) ($_POST['maxComensales'] ?? $minComensales));
+                $producto = new Tarta(null, $nombre, $precio, $descripcion, $categoria, $rellenos, $numPisos, $minComensales, $maxComensales);
+                break;
 
-        case 'Chocolate':
-            $porcentajeCacao = (float) ($_POST['porcentajeCacao'] ?? 0);
-            $peso = (float) ($_POST['peso'] ?? 0);
-            $producto = new Chocolate(null, $nombre, $precio, $descripcion, $categoria, $porcentajeCacao, $peso);
-            break;
+            default:
+                throw new Exception("Tipo de producto no válido.");
+        }
 
-        case 'Tarta':
-            $rellenos = explode(',', $_POST['rellenos'] ?? '');
-            $numPisos = (int) ($_POST['numPisos'] ?? 1);
-            $minComensales = (int) ($_POST['minComensales'] ?? 2);
-            $maxComensales = (int) ($_POST['maxComensales'] ?? 2);
-            $producto = new Tarta(null, $nombre, $precio, $descripcion, $categoria, $rellenos, $numPisos, $minComensales, $maxComensales);
-            break;
-
-        default:
-            header("Location: mainAdmin.php?error=Tipo de producto no válido");
-            exit;
+        if ($pasteleria->guardarProducto($producto)) {
+            header("Location: mainAdmin.php?success=Producto añadido correctamente");
+        } else {
+            throw new Exception("Error al guardar el producto en la base de datos.");
+        }
+    } catch (Exception $e) {
+        header("Location: agregarProducto.php?error=" . urlencode($e->getMessage()));
     }
-
-
-
-    // Guardar el producto en la base de datos
-    $exito = $pasteleria->guardarProducto($producto);
-
-    if ($exito) {
-        header("Location: mainAdmin.php?success=Producto añadido correctamente");
-    } else {
-        header("Location: mainAdmin.php?error=No se pudo añadir el producto");
-    }
-    exit;
-
 }
+
 ?>
 
 
@@ -92,9 +84,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <!-- Precio -->
                     <div class="mb-3">
-                        <label for="precio" class="form-label">Precio</label>
-                        <input type="number" class="form-control" id="precio" name="precio" step="0.01"
+                        <label for="precio" class="form-label">Precio (€)</label>
+                        <input type="number" class="form-control" id="precio" name="precio" step="0.01" min="0.01"
                             placeholder="Ejemplo: 19.99" required>
+                        <div class="invalid-feedback">El precio debe ser mayor que 0.</div>
                     </div>
 
 
@@ -136,15 +129,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
 
 
+                    <!-- Porcentaje de Cacao -->
                     <div id="tipo-chocolate" class="tipo-opciones d-none">
-                        <div class="mb-3">
-                            <label for="porcentajeCacao" class="form-label">Porcentaje de Cacao</label>
-                            <input type="number" class="form-control" id="porcentajeCacao" name="porcentajeCacao"
-                                step="0.1" placeholder="Ejemplo: 70">
+                        <div id="tipo-chocolate" class="tipo-opciones d-none">
+                            <div class="mb-3">
+                                <label for="porcentajeCacao" class="form-label">Porcentaje de Cacao (%)</label>
+                                <input type="number" class="form-control" id="porcentajeCacao" name="porcentajeCacao"
+                                    step="0.1" min="1" max="100" placeholder="Ejemplo: 70">
+                                <div class="invalid-feedback">El porcentaje de cacao debe estar entre 1 y 100.</div>
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label for="peso" class="form-label">Peso (g)</label>
-                            <input type="number" class="form-control" id="peso" name="peso" placeholder="Ejemplo: 100">
+                            <input type="number" class="form-control" id="peso" name="peso" min="1"
+                                placeholder="Ejemplo: 100">
                         </div>
                     </div>
 
@@ -155,10 +153,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <input type="text" class="form-control" id="rellenos" name="rellenos"
                                 placeholder="Ejemplo: Fresa, Chocolate">
                         </div>
-                        <div class="mb-3">
-                            <label for="numPisos" class="form-label">Número de Pisos</label>
-                            <input type="number" class="form-control" id="numPisos" name="numPisos" min="1"
-                                placeholder="Ejemplo: 2">
+                        <div id="tipo-tarta" class="tipo-opciones d-none">
+                            <div class="mb-3">
+                                <label for="numPisos" class="form-label">Número de Pisos</label>
+                                <input type="number" class="form-control" id="numPisos" name="numPisos" min="1"
+                                    placeholder="Ejemplo: 2">
+                                <div class="invalid-feedback">El número de pisos debe ser al menos 1.</div>
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label for="minComensales" class="form-label">Mínimo de Comensales</label>
@@ -191,6 +192,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             const target = document.getElementById('tipo-' + tipo.toLowerCase());
             if (target) target.classList.remove('d-none');
         }
+    </script>
+
+    <script>
+        document.getElementById('productoForm').addEventListener('submit', function (event) {
+            let valid = true;
+
+            // Validar precio
+            const precio = document.getElementById('precio');
+            if (precio.value <= 0) {
+                precio.value = 1; // Valor mínimo
+                precio.classList.add('is-invalid');
+                valid = false;
+            } else {
+                precio.classList.remove('is-invalid');
+            }
+
+            // Validar porcentaje de cacao
+            const porcentajeCacao = document.getElementById('porcentajeCacao');
+            if (porcentajeCacao && (porcentajeCacao.value < 1 || porcentajeCacao.value > 100)) {
+                porcentajeCacao.value = Math.max(1, Math.min(100, porcentajeCacao.value));
+                porcentajeCacao.classList.add('is-invalid');
+                valid = false;
+            } else if (porcentajeCacao) {
+                porcentajeCacao.classList.remove('is-invalid');
+            }
+
+            // Validar número de pisos
+            const numPisos = document.getElementById('numPisos');
+            if (numPisos && numPisos.value < 1) {
+                numPisos.value = 1; // Valor mínimo
+                numPisos.classList.add('is-invalid');
+                valid = false;
+            } else if (numPisos) {
+                numPisos.classList.remove('is-invalid');
+            }
+
+            if (!valid) {
+                event.preventDefault(); // Evitar el envío si hay errores
+            }
+        });
     </script>
 
 

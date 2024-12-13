@@ -8,24 +8,20 @@ if ($_SESSION['user'] !== 'admin') {
     exit;
 }
 
-
 if (!isset($_GET['id'])) {
     header("Location: mainAdmin.php?error=Falta el ID del producto");
     exit;
 }
 
-
 $id = intval($_GET['id']);
 $pasteleria = new Pasteleria();
 $producto = $pasteleria->buscarProductoPorId($id);
-
 
 if (!$producto) {
     header("Location: mainAdmin.php?error=Producto no encontrado");
     exit;
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="es">
@@ -34,25 +30,20 @@ if (!$producto) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar Producto</title>
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <!-- Custom Styles -->
     <link rel="stylesheet" href="../css/styles2.css">
     <link rel="icon" href="../img/favicon.ico" type="image/x-icon">
-
 </head>
 
 <body>
     <div class="container mt-5">
-
         <!-- Encabezado -->
         <h1 class="text-center form-title"><i class="bi bi-pencil-square"></i> Editar Producto</h1>
 
         <!-- Formulario -->
         <form action="actualizarProducto.php" method="POST" enctype="multipart/form-data" class="form-section">
-            <input type="hidden" name="id" value="<?= $id ?>">
-
+            <input type="hidden" name="id" value="<?= htmlspecialchars($id) ?>">
 
             <!-- Información General -->
             <h2 class="form-title">Información General</h2>
@@ -81,7 +72,6 @@ if (!$producto) {
                     placeholder="Descripción del producto"><?= htmlspecialchars($producto->getDescripcion()) ?></textarea>
             </div>
 
-
             <!-- Imagen -->
             <div class="mb-3">
                 <label for="imagen" class="form-label">Imagen del Producto</label>
@@ -89,16 +79,14 @@ if (!$producto) {
                 <?php if (file_exists("../img/{$producto->getId()}.jpg")): ?>
                     <div class="mt-3">
                         <p>Imagen actual:</p>
-                        <img src="../img/<?= $producto->getId() ?>.jpg" class="img-preview" alt="Imagen del producto">
+                        <img src="../img/<?= htmlspecialchars($producto->getId()) ?>.jpg" class="img-preview"
+                            alt="Imagen del producto">
                     </div>
                 <?php endif; ?>
             </div>
 
-
             <!-- Detalles específicos -->
             <h2 class="form-title">Detalles Específicos</h2>
-            <div class="form-divider"></div>
-
 
             <?php if ($producto instanceof Bollo): ?>
                 <div class="mb-3">
@@ -106,7 +94,6 @@ if (!$producto) {
                     <input type="text" class="form-control" id="relleno" name="relleno" placeholder="Relleno"
                         value="<?= htmlspecialchars($producto->getRelleno()) ?>">
                 </div>
-
             <?php elseif ($producto instanceof Chocolate): ?>
                 <div class="mb-3">
                     <label for="porcentajeCacao" class="form-label">Porcentaje de Cacao (%)</label>
@@ -118,7 +105,6 @@ if (!$producto) {
                     <input type="number" class="form-control" id="peso" name="peso" placeholder="Peso en gramos"
                         value="<?= htmlspecialchars($producto->getPeso()) ?>">
                 </div>
-
             <?php elseif ($producto instanceof Tarta): ?>
                 <div class="mb-3">
                     <label for="rellenos" class="form-label">Rellenos (separados por comas)</label>
@@ -142,13 +128,11 @@ if (!$producto) {
                 </div>
             <?php endif; ?>
 
-
             <!-- Botones -->
             <div class="d-flex justify-content-between mt-4">
                 <button type="submit" class="btn btn-primary w-100 me-2">Guardar Cambios</button>
                 <a href="mainAdmin.php" class="btn btn-secondary w-100">Volver</a>
             </div>
-
         </form>
     </div>
 </body>
